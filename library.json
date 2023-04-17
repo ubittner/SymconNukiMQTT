@@ -1,0 +1,12 @@
+{
+    "id": "{C3B87D15-32F7-E693-EFE2-67AB33345452}",
+    "name": "Nuki MQTT",
+    "author": "Ulrich Bittner",
+    "url": "https://github.com/ubittner/SymconNukiMQTT",
+    "compatibility": {
+        "version": "6.3"
+    },
+    "version": "1.0",
+    "build": 1,
+    "date": 1681452787
+}
