@@ -1,7 +1,5 @@
 <?php
 
-//ToDo: documentation
-
 /**
  * @project       SymconNukiMQTT/SmartLock
  * @file          module.php
@@ -21,7 +19,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
     ##### Constants
     private const MODULE_NAME = 'Nuki Smart Lock (MQTT API)';
     private const MODULE_PREFIX = 'NUKISLMQTT';
-    private const MODULE_VERSION = '1.0-1, 14.04.2023';
+    private const MODULE_VERSION = '1.0-2, 19.04.2023';
 
     //MQTT Server (Splitter)
     private const NUKI_MQTT_SERVER_GUID = '{C6D2AEB3-6E1F-4B2E-8E69-3A1A00246850}';
@@ -660,17 +658,21 @@ class NukiSmartLockMQTTAPI extends IPSModule
      */
     public function Lock(): void
     {
-        $this->SetValue('LockAction', 2);
-        $Data['DataID'] = self::NUKI_MQTT_TX_GUID;
-        $Data['PacketType'] = 3;
-        $Data['QualityOfService'] = 0;
-        $Data['Retain'] = false;
-        $Data['Topic'] = $this->ReadPropertyString('MQTTTopic') . '/lock';
-        $Data['Payload'] = 'true';
-        $DataJSON = json_encode($Data, JSON_UNESCAPED_SLASHES);
-        $this->SendDebug(__FUNCTION__ . ' Topic', $Data['Topic'], 0);
-        $this->SendDebug(__FUNCTION__ . ' Data', $DataJSON, 0);
-        $this->SendDataToParent($DataJSON);
+        if ($this->HasActiveParent()) {
+            $this->SetValue('LockAction', 2);
+            $Data['DataID'] = self::NUKI_MQTT_TX_GUID;
+            $Data['PacketType'] = 3;
+            $Data['QualityOfService'] = 0;
+            $Data['Retain'] = false;
+            $Data['Topic'] = $this->ReadPropertyString('MQTTTopic') . '/lock';
+            $Data['Payload'] = 'true';
+            $DataJSON = json_encode($Data, JSON_UNESCAPED_SLASHES);
+            $this->SendDebug(__FUNCTION__ . ' Topic', $Data['Topic'], 0);
+            $this->SendDebug(__FUNCTION__ . ' Data', $DataJSON, 0);
+            $this->SendDataToParent($DataJSON);
+        } else {
+            $this->SendDebug(__FUNCTION__, 'Abort, parent is inactive!', 0);
+        }
     }
 
     /**
@@ -681,17 +683,21 @@ class NukiSmartLockMQTTAPI extends IPSModule
      */
     public function UnLock(): void
     {
-        $this->SetValue('LockAction', 1);
-        $Data['DataID'] = self::NUKI_MQTT_TX_GUID;
-        $Data['PacketType'] = 3;
-        $Data['QualityOfService'] = 0;
-        $Data['Retain'] = false;
-        $Data['Topic'] = $this->ReadPropertyString('MQTTTopic') . '/unlock';
-        $Data['Payload'] = 'true';
-        $DataJSON = json_encode($Data, JSON_UNESCAPED_SLASHES);
-        $this->SendDebug(__FUNCTION__ . ' Topic', $Data['Topic'], 0);
-        $this->SendDebug(__FUNCTION__ . ' Data', $DataJSON, 0);
-        $this->SendDataToParent($DataJSON);
+        if ($this->HasActiveParent()) {
+            $this->SetValue('LockAction', 1);
+            $Data['DataID'] = self::NUKI_MQTT_TX_GUID;
+            $Data['PacketType'] = 3;
+            $Data['QualityOfService'] = 0;
+            $Data['Retain'] = false;
+            $Data['Topic'] = $this->ReadPropertyString('MQTTTopic') . '/unlock';
+            $Data['Payload'] = 'true';
+            $DataJSON = json_encode($Data, JSON_UNESCAPED_SLASHES);
+            $this->SendDebug(__FUNCTION__ . ' Topic', $Data['Topic'], 0);
+            $this->SendDebug(__FUNCTION__ . ' Data', $DataJSON, 0);
+            $this->SendDataToParent($DataJSON);
+        } else {
+            $this->SendDebug(__FUNCTION__, 'Abort, parent is inactive!', 0);
+        }
     }
 
     /**
@@ -719,17 +725,21 @@ class NukiSmartLockMQTTAPI extends IPSModule
             $this->SendDebug(__FUNCTION__, 'Abort, value is not supported!', 0);
             return;
         }
-        $this->SetValue('LockAction', $Action);
-        $Data['DataID'] = self::NUKI_MQTT_TX_GUID;
-        $Data['PacketType'] = 3;
-        $Data['QualityOfService'] = 0;
-        $Data['Retain'] = false;
-        $Data['Topic'] = $this->ReadPropertyString('MQTTTopic') . '/lockAction';
-        $Data['Payload'] = strval($Action);
-        $DataJSON = json_encode($Data, JSON_UNESCAPED_SLASHES);
-        $this->SendDebug(__FUNCTION__ . ' Topic', $Data['Topic'], 0);
-        $this->SendDebug(__FUNCTION__ . ' Data', $DataJSON, 0);
-        $this->SendDataToParent($DataJSON);
+        if ($this->HasActiveParent()) {
+            $this->SetValue('LockAction', $Action);
+            $Data['DataID'] = self::NUKI_MQTT_TX_GUID;
+            $Data['PacketType'] = 3;
+            $Data['QualityOfService'] = 0;
+            $Data['Retain'] = false;
+            $Data['Topic'] = $this->ReadPropertyString('MQTTTopic') . '/lockAction';
+            $Data['Payload'] = strval($Action);
+            $DataJSON = json_encode($Data, JSON_UNESCAPED_SLASHES);
+            $this->SendDebug(__FUNCTION__ . ' Topic', $Data['Topic'], 0);
+            $this->SendDebug(__FUNCTION__ . ' Data', $DataJSON, 0);
+            $this->SendDataToParent($DataJSON);
+        } else {
+            $this->SendDebug(__FUNCTION__, 'Abort, parent is inactive!', 0);
+        }
     }
 
     /**
