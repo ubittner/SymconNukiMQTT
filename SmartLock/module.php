@@ -19,7 +19,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
     ##### Constants
     private const MODULE_NAME = 'Nuki Smart Lock (MQTT API)';
     private const MODULE_PREFIX = 'NUKISLMQTT';
-    private const MODULE_VERSION = '1.0-2, 19.04.2023';
+    private const MODULE_VERSION = '1.0-3, 29.04.2023';
 
     //MQTT Server (Splitter)
     private const NUKI_MQTT_SERVER_GUID = '{C6D2AEB3-6E1F-4B2E-8E69-3A1A00246850}';
@@ -409,7 +409,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
                         case fnmatch('*/batteryCharging', $topic):
                             $this->SendDebug(__FUNCTION__, 'batteryCharging: ' . $payload, 0);
                             $value = false;
-                            if ($payload == 'active') {
+                            if ($payload == 'true') {
                                 $value = true;
                             }
                             $this->SetValue('BatteryCharging', $value);

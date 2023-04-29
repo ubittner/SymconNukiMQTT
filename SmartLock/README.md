@@ -212,7 +212,8 @@ Beispiele:
 
 ### 8. Changelog
 
-| Version | Build | Datum      | Beschreibung                                   |
-|---------|-------|------------|------------------------------------------------|
-| 1.0     | 2     | 19.04.2023 | Prüfung ob die übergeordnete Instanz aktiv ist |
-| 1.0     | 1     | 14.04.2023 | Initiale Version                               |
+| Version | Build | Datum        | Beschreibung                                   |
+|---------|-------|--------------|------------------------------------------------|
+| 1.0     | 3     | 29.04.2023   | Fix für Batterieaufladung                      |
+| 1.0     | 2     | 19.04.2023   | Prüfung ob die übergeordnete Instanz aktiv ist |
+| 1.0     | 1     | 14.04.2023   | Initiale Version                               |
