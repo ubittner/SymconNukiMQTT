@@ -14,12 +14,20 @@
 
 declare(strict_types=1);
 
+//SymOS on SymBox doesn't support fnmatch
+if (!function_exists('fnmatch')) {
+    function fnmatch($pattern, $string): bool
+    {
+        return boolval(preg_match('#^' . strtr(preg_quote($pattern, '#'), ['\*' => '.*', '\?' => '.']) . '$#i', $string));
+    }
+}
+
 class NukiSmartLockMQTTAPI extends IPSModule
 {
     ##### Constants
     private const MODULE_NAME = 'Nuki Smart Lock (MQTT API)';
     private const MODULE_PREFIX = 'NUKISLMQTT';
-    private const MODULE_VERSION = '1.0-3, 29.04.2023';
+    private const MODULE_VERSION = '1.0-4, 23.05.2023';
 
     //MQTT Server (Splitter)
     private const NUKI_MQTT_SERVER_GUID = '{C6D2AEB3-6E1F-4B2E-8E69-3A1A00246850}';
