@@ -25,9 +25,9 @@ if (!function_exists('fnmatch')) {
 class NukiSmartLockMQTTAPI extends IPSModule
 {
     ##### Constants
+    private const LIBRARY_GUID = '{C3B87D15-32F7-E693-EFE2-67AB33345452}';
     private const MODULE_NAME = 'Nuki Smart Lock (MQTT API)';
     private const MODULE_PREFIX = 'NUKISLMQTT';
-    private const MODULE_VERSION = '1.0-4, 23.05.2023';
 
     //MQTT Server (Splitter)
     private const NUKI_MQTT_SERVER_GUID = '{C6D2AEB3-6E1F-4B2E-8E69-3A1A00246850}';
@@ -38,7 +38,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
     //RX (Server -> Module)
     private const NUKI_MQTT_RX_GUID = '{7F7632D9-FA40-4F38-8DEA-C83CD4325A32}';
 
-    public function Create()
+    public function Create(): void
     {
         //Never delete this line!
         parent::Create();
@@ -151,7 +151,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
         $this->ConnectParent(self::NUKI_MQTT_SERVER_GUID);
     }
 
-    public function ApplyChanges()
+    public function ApplyChanges(): void
     {
         //Wait until IP-Symcon is started
         $this->RegisterMessage(0, IPS_KERNELSTARTED);
@@ -172,7 +172,6 @@ class NukiSmartLockMQTTAPI extends IPSModule
 
         //Door sensor
         if ($this->ReadPropertyBoolean('UseDoorSensor')) {
-
             //Door sensor state
             $profile = self::MODULE_PREFIX . '.' . $this->InstanceID . '.DoorSensorState';
             if (!IPS_VariableProfileExists($profile)) {
@@ -239,7 +238,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
         $this->UpdateProtocol();
     }
 
-    public function Destroy()
+    public function Destroy(): void
     {
         //Never delete this line!
         parent::Destroy();
@@ -254,7 +253,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
         }
     }
 
-    public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
+    public function MessageSink($TimeStamp, $SenderID, $Message, $Data): void
     {
         $this->SendDebug(__FUNCTION__, $TimeStamp . ', SenderID: ' . $SenderID . ', Message: ' . $Message . ', Data: ' . print_r($Data, true), 0);
         if ($Message == IPS_KERNELSTARTED) {
@@ -262,20 +261,21 @@ class NukiSmartLockMQTTAPI extends IPSModule
         }
     }
 
-    public function GetConfigurationForm()
+    public function GetConfigurationForm(): string|false
     {
         $data = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
+        $library = IPS_GetLibrary(self::LIBRARY_GUID);
         //Module name
         $data['elements'][1]['caption'] = self::MODULE_NAME;
         //Version
-        $data['elements'][2]['caption'] = 'Version: ' . self::MODULE_VERSION;
+        $data['elements'][2]['caption'] = 'Version: ' . $library['Version'] . '-' . $library['Build'] . ', ' . date('d.m.Y', $library['Date']);
         return json_encode($data);
     }
 
     /**
      * @throws Exception
      */
-    public function ReceiveData($JSONString)
+    public function ReceiveData($JSONString): void
     {
         if (($this->ReadPropertyString('MQTTTopic')) != '') {
             $this->SendDebug(__FUNCTION__, 'Incoming data: ' . $JSONString, 0);
@@ -295,101 +295,100 @@ class NukiSmartLockMQTTAPI extends IPSModule
             if (isset($topic) && isset($payload)) {
                 if ($existingTopic && $existingPayload) {
                     switch ($topic) {
-
                         ##### Published topics for device states
 
-                        //Device type
-                        /**
-                         * Nuki device type (see Device Types).
-                         * Beta: Only device Type 4 = Smart Lock 3.0 Pro is supported
-                         *
-                         * 0 =  Smart Lock
-                         * 2 =  Opener
-                         * 3 =  Smart Door
-                         * 4 =  Smart Lock 3.0 (Pro)
-                         */
                         case fnmatch('*/deviceType', $topic):
+                            //Device type
+                            /**
+                             * Nuki device type (see Device Types).
+                             * Beta: Only device Type 4 = Smart Lock 3.0 Pro is supported
+                             *
+                             * 0 =  Smart Lock
+                             * 2 =  Opener
+                             * 3 =  Smart Door
+                             * 4 =  Smart Lock 3.0 (Pro)
+                             */
                             $this->SendDebug(__FUNCTION__, 'deviceType: ' . $payload, 0);
                             $this->WriteAttributeInteger('DeviceType', intval($payload));
                             break;
 
-                        //Name
-                        /**
-                         * Name of the device.
-                         */
                         case fnmatch('*/name', $topic):
+                            //Name
+                            /**
+                             * Name of the device.
+                             */
                             $this->SendDebug(__FUNCTION__, 'name: ' . $payload, 0);
                             $this->WriteAttributeString('Name', strval($payload));
                             break;
 
-                        //Firmware
-                        /**
-                         * Current firmware version of the device.
-                         */
                         case fnmatch('*/firmware', $topic):
+                            //Firmware
+                            /**
+                             * Current firmware version of the device.
+                             */
                             $this->SendDebug(__FUNCTION__, 'firmware: ' . $payload, 0);
                             $this->WriteAttributeString('Firmware', strval($payload));
                             break;
 
-                        //Mode
-                        /**
-                         * ID of the lock mode (see Modes).
-                         *
-                         * Smart Lock:
-                         * 2 =  door mode
-                         *
-                         * Opener:
-                         * 2 =  door mode
-                         * 3 =  continuous mode (Ring to Open permanently active)
-                         */
                         case fnmatch('*/mode', $topic):
+                            //Mode
+                            /**
+                             * ID of the lock mode (see Modes).
+                             *
+                             * Smart Lock:
+                             * 2 =  door mode
+                             *
+                             * Opener:
+                             * 2 =  door mode
+                             * 3 =  continuous mode (Ring to Open permanently active)
+                             */
                             $this->SendDebug(__FUNCTION__, 'mode: ' . $payload, 0);
                             $this->WriteAttributeInteger('Mode', intval($payload));
                             break;
 
-                        //State
-                        /**
-                         * ID of the lock state (see Lock States).
-                         *
-                         * Smart Lock:
-                         * 0 =      uncalibrated
-                         * 1 =      locked
-                         * 2 =      unlocking
-                         * 3 =      unlocked
-                         * 4 =      locking
-                         * 5 =      unlatched
-                         * 6 =      unlocked (lock ‘n’ go)
-                         * 7 =      unlatching
-                         * 253 =    -
-                         * 254 =    motor blocked
-                         * 255 =    undefined
-                         *
-                         * Opener:
-                         * 0 =      untrained
-                         * 1 =      online
-                         * 2 =      -
-                         * 3 =      rto active
-                         * 4 =      -
-                         * 5 =      open
-                         * 6 =      -
-                         * 7 =      opening
-                         * 253 =    boot run
-                         * 254 =    -
-                         * 255 =    undefined
-                         */
                         case fnmatch('*/state', $topic):
+                            //State
+                            /**
+                             * ID of the lock state (see Lock States).
+                             *
+                             * Smart Lock:
+                             * 0 =      uncalibrated
+                             * 1 =      locked
+                             * 2 =      unlocking
+                             * 3 =      unlocked
+                             * 4 =      locking
+                             * 5 =      unlatched
+                             * 6 =      unlocked (lock ‘n’ go)
+                             * 7 =      unlatching
+                             * 253 =    -
+                             * 254 =    motor blocked
+                             * 255 =    undefined
+                             *
+                             * Opener:
+                             * 0 =      untrained
+                             * 1 =      online
+                             * 2 =      -
+                             * 3 =      rto active
+                             * 4 =      -
+                             * 5 =      open
+                             * 6 =      -
+                             * 7 =      opening
+                             * 253 =    boot run
+                             * 254 =    -
+                             * 255 =    undefined
+                             */
                             $this->SendDebug(__FUNCTION__, 'state: ' . $payload, 0);
                             $this->SetValue('LockState', intval($payload));
                             break;
 
-                        //Battery critical
-                        /**
-                         * Flag indicating if the batteries of the Nuki device are at critical level.
-                         *
-                         * false =  battery normal
-                         * true =   battery critical
-                         */
                         case fnmatch('*/batteryCritical', $topic):
+                            //Battery critical
+                            /**
+                             * Flag indicating if the batteries of the Nuki device are at critical level.
+                             *
+                             * false =  battery normal
+                             * true =   battery critical
+                             */
                             $this->SendDebug(__FUNCTION__, 'batteryCritical: ' . $payload, 0);
                             $value = false;
                             if ($payload == 'true') {
@@ -398,23 +397,23 @@ class NukiSmartLockMQTTAPI extends IPSModule
                             $this->SetValue('BatteryCritical', $value);
                             break;
 
-                        //Battery charge state
-                        /**
-                         * Value representing the current charge status in %.
-                         */
                         case fnmatch('*/batteryChargeState', $topic):
+                            //Battery charge state
+                            /**
+                             * Value representing the current charge status in %.
+                             */
                             $this->SendDebug(__FUNCTION__, 'batteryChargeState: ' . $payload, 0);
                             $this->SetValue('BatteryChargeState', intval($payload));
                             break;
 
-                        //Battery charging
-                        /**
-                         * Flag indicating if the batteries of the Nuki device are charging at the moment.
-                         *
-                         * false =  inactive
-                         * true =   active
-                         */
                         case fnmatch('*/batteryCharging', $topic):
+                            //Battery charging
+                            /**
+                             * Flag indicating if the batteries of the Nuki device are charging at the moment.
+                             *
+                             * false =  inactive
+                             * true =   active
+                             */
                             $this->SendDebug(__FUNCTION__, 'batteryCharging: ' . $payload, 0);
                             $value = false;
                             if ($payload == 'true') {
@@ -423,14 +422,14 @@ class NukiSmartLockMQTTAPI extends IPSModule
                             $this->SetValue('BatteryCharging', $value);
                             break;
 
-                        //Keypad battery critical
-                        /**
-                         * Flag indicating if the batteries of the paired Nuki Keypad are at critical level.
-                         *
-                         * false =  battery normal
-                         * true =   battery critical
-                         */
                         case fnmatch('*/keypadBatteryCritical', $topic):
+                            //Keypad battery critical
+                            /**
+                             * Flag indicating if the batteries of the paired Nuki Keypad are at critical level.
+                             *
+                             * false =  battery normal
+                             * true =   battery critical
+                             */
                             $this->SendDebug(__FUNCTION__, 'keypadBatteryCritical: ' . $payload, 0);
                             if ($this->ReadPropertyBoolean('UseKeypad')) {
                                 $value = false;
@@ -441,34 +440,34 @@ class NukiSmartLockMQTTAPI extends IPSModule
                             }
                             break;
 
-                        //Door sensor state
-                        /**
-                         * ID of the door sensor state.
-                         *
-                         * 1 =      deactivated
-                         * 2 =      door closed
-                         * 3 =      door opened
-                         * 4 =      door state unknown
-                         * 5 =      calibrating
-                         * 16 =     uncalibrated
-                         * 240 =    tampered
-                         * 255 =    unknown
-                         */
                         case fnmatch('*/doorsensorState', $topic):
+                            //Door sensor state
+                            /**
+                             * ID of the door sensor state.
+                             *
+                             * 1 =      deactivated
+                             * 2 =      door closed
+                             * 3 =      door opened
+                             * 4 =      door state unknown
+                             * 5 =      calibrating
+                             * 16 =     uncalibrated
+                             * 240 =    tampered
+                             * 255 =    unknown
+                             */
                             $this->SendDebug(__FUNCTION__, 'doorsensorState: ' . $payload, 0);
                             if ($this->ReadPropertyBoolean('UseDoorSensor')) {
                                 $this->SetValue('DoorSensorState', intval($payload));
                             }
                             break;
 
-                        //Door sensor battery critical
-                        /**
-                         * Flag indicating if the batteries of the paired Nuki Door Sensor are at critical level.
-                         *
-                         * false =  battery normal
-                         * true =   battery critical
-                         */
                         case fnmatch('*/doorsensorBatteryCritical', $topic):
+                            //Door sensor battery critical
+                            /**
+                             * Flag indicating if the batteries of the paired Nuki Door Sensor are at critical level.
+                             *
+                             * false =  battery normal
+                             * true =   battery critical
+                             */
                             $this->SendDebug(__FUNCTION__, 'doorsensorBatteryCritical: ' . $payload, 0);
                             if ($this->ReadPropertyBoolean('UseDoorSensor')) {
                                 $value = false;
@@ -479,23 +478,23 @@ class NukiSmartLockMQTTAPI extends IPSModule
                             }
                             break;
 
-                        //Ring action timestamp
-                        /**
-                         * Timestamp of the last ring-action. Only for Nuki Opener.
-                         */
                         case fnmatch('*/ringactionTimestamp', $topic):
+                            //Ring action timestamp
+                            /**
+                             * Timestamp of the last ring-action. Only for Nuki Opener.
+                             */
                             $this->SendDebug(__FUNCTION__, 'ringactionTimestamp: ' . $payload, 0);
                             $this->WriteAttributeString('RingActionTimestamp', strval($payload));
                             break;
 
-                        //Server connected
-                        /**
-                         * Connection state to the Nuki server.
-                         *
-                         * false =  disconnected
-                         * true =   connected
-                         */
                         case fnmatch('*/serverConnected', $topic):
+                            //Server connected
+                            /**
+                             * Connection state to the Nuki server.
+                             *
+                             * false =  disconnected
+                             * true =   connected
+                             */
                             $this->SendDebug(__FUNCTION__, 'serverConnected: ' . $payload, 0);
                             $value = false;
                             if ($payload == 'true') {
@@ -504,26 +503,26 @@ class NukiSmartLockMQTTAPI extends IPSModule
                             $this->WriteAttributeBoolean('ServerConnected', $value);
                             break;
 
-                        //Timestamp
-                        /**
-                         * Timestamp of the retrieval of the last update.
-                         */
                         case fnmatch('*/timestamp', $topic):
+                            //Timestamp
+                            /**
+                             * Timestamp of the retrieval of the last update.
+                             */
                             $this->SendDebug(__FUNCTION__, 'timestamp: ' . $payload, 0);
                             $this->WriteAttributeString('Timestamp', strval($payload));
                             $time = strtotime(strval($payload));
-                            $this->SetValue('LastUpdate', strval(date('d.m.Y, H:i:s', $time)));
+                            $this->SetValue('LastUpdate', date('d.m.Y, H:i:s', $time));
                             break;
 
-                        //Connected
-                        /**
-                         * Indicates if the device is currently connected to the MQTT server or not.
-                         * Uses “false” as the last will message, which will be set by the mqtt server automatically if the device disconnects.
-                         *
-                         * false =  disconnected
-                         * true =   connected
-                         */
                         case fnmatch('*/connected', $topic):
+                            //Connected
+                            /**
+                             * Indicates if the device is currently connected to the MQTT server or not.
+                             * Uses “false” as the last will message, which will be set by the mqtt server automatically if the device disconnects.
+                             *
+                             * false =  disconnected
+                             * true =   connected
+                             */
                             $this->SendDebug(__FUNCTION__, 'connected: ' . $payload, 0);
                             $value = false;
                             if ($payload == 'true') {
@@ -532,95 +531,95 @@ class NukiSmartLockMQTTAPI extends IPSModule
                             $this->WriteAttributeBoolean('Connected', $value);
                             break;
 
-                        ##### Published and subscribed topics for device control
+                            ##### Published and subscribed topics for device control
 
-                        //Lock action
-                        /**
-                         * ID of the desired Lock Action. Only actions 1-6 are supported.
-                         *
-                         * 1 =  unlock
-                         * 2 =  lock
-                         * 3 =  unlatch
-                         * 4 =  lock ‘n’ go
-                         * 5 =  lock ‘n’ go with unlatch
-                         * 6 =  full lock
-                         */
                         case fnmatch('*/lockAction', $topic):
+                            //Lock action
+                            /**
+                             * ID of the desired Lock Action. Only actions 1-6 are supported.
+                             *
+                             * 1 =  unlock
+                             * 2 =  lock
+                             * 3 =  unlatch
+                             * 4 =  lock ‘n’ go
+                             * 5 =  lock ‘n’ go with unlatch
+                             * 6 =  full lock
+                             */
                             $this->SendDebug(__FUNCTION__, 'lockAction: ' . $payload, 0);
                             break;
 
-                        //Lock
-                        /**
-                         * Set to “true” to execute the simple lock action “lock”.
-                         */
                         case fnmatch('*/lock', $topic):
+                            //Lock
+                            /**
+                             * Set to “true” to execute the simple lock action “lock”.
+                             */
                             $this->SendDebug(__FUNCTION__, 'lock: ' . $payload, 0);
                             break;
 
-                        //Unlock
-                        /**
-                         * Set to “true” to execute the simple lock action “unlock”.
-                         */
                         case fnmatch('*/unlock', $topic):
+                            //Unlock
+                            /**
+                             * Set to “true” to execute the simple lock action “unlock”.
+                             */
                             $this->SendDebug(__FUNCTION__, 'unlock: ' . $payload, 0);
                             break;
 
-                        //Command response
-                        /**
-                         * The Nuki device publishes to this topic the return code of the last command it executed:
-                         *
-                         * 0 = Success
-                         * 1-255 = Error code as described in the BLE API.
-                         *
-                         * Note:
-                         * Nuki devices can only process one command at a time.
-                         * If several commands are sent in parallel the commandResponses might overlap.
-                         */
                         case fnmatch('*/commandResponse', $topic):
+                            //Command response
+                            /**
+                             * The Nuki device publishes to this topic the return code of the last command it executed:
+                             *
+                             * 0 = Success
+                             * 1-255 = Error code as described in the BLE API.
+                             *
+                             * Note:
+                             * Nuki devices can only process one command at a time.
+                             * If several commands are sent in parallel the commandResponses might overlap.
+                             */
                             $this->SendDebug(__FUNCTION__, 'commandResponse: ' . $payload, 0);
                             $this->WriteAttributeInteger('CommandResponse', intval($payload));
                             break;
 
-                        //Lock action event
-                        /**
-                         * The Nuki device publishes to this topic a comma separated list whenever a lock action is about to be executed:
-                         *
-                         * (1)
-                         * LockAction:
-                         * 1 =  unlock
-                         * 2 =  lock
-                         * 3 =  unlatch
-                         * 4 =  lock ‘n’ go
-                         * 5 =  lock ‘n’ go with unlatch
-                         * 6 =  full lock
-                         * 80 = fob (without action)
-                         * 90 = button (without action)
-                         *
-                         * (2)
-                         * Trigger:
-                         * 0 =      system / bluetooth command
-                         * 1 =      (reserved)
-                         * 2 =      button
-                         * 3 =      automatic (e.g. time control)
-                         * 6 =      auto lock
-                         * 171 =    HomeKit
-                         * 172 =    MQTT
-                         *
-                         * (3)
-                         * Auth-ID: Auth-ID of the user
-                         *
-                         * (4)
-                         * Code-ID: ID of the Keypad code, 0 = unknown
-                         *
-                         * (5)
-                         * Auto-Unlock (0 or 1) or number of button presses (only button & fob actions) or
-                         * Keypad source (0 = back key, 1 = code, 2 = fingerprint)
-                         *
-                         * Hint:
-                         * Only lock actions that are attempted to be executed are reported.
-                         * E.g. unsuccessful Keypad code entries or lock commands outside a time window are not published.
-                         */
                         case fnmatch('*/lockActionEvent', $topic):
+                            //Lock action event
+                            /**
+                             * The Nuki device publishes to this topic a comma separated list whenever a lock action is about to be executed:
+                             *
+                             * (1)
+                             * LockAction:
+                             * 1 =  unlock
+                             * 2 =  lock
+                             * 3 =  unlatch
+                             * 4 =  lock ‘n’ go
+                             * 5 =  lock ‘n’ go with unlatch
+                             * 6 =  full lock
+                             * 80 = fob (without action)
+                             * 90 = button (without action)
+                             *
+                             * (2)
+                             * Trigger:
+                             * 0 =      system / bluetooth command
+                             * 1 =      (reserved)
+                             * 2 =      button
+                             * 3 =      automatic (e.g. time control)
+                             * 6 =      auto lock
+                             * 171 =    HomeKit
+                             * 172 =    MQTT
+                             *
+                             * (3)
+                             * Auth-ID: Auth-ID of the user
+                             *
+                             * (4)
+                             * Code-ID: ID of the Keypad code, 0 = unknown
+                             *
+                             * (5)
+                             * Auto-Unlock (0 or 1) or number of button presses (only button & fob actions) or
+                             * Keypad source (0 = back key, 1 = code, 2 = fingerprint)
+                             *
+                             * Hint:
+                             * Only lock actions that are attempted to be executed are reported.
+                             * E.g. unsuccessful Keypad code entries or lock commands outside a time window are not published.
+                             */
                             $this->SendDebug(__FUNCTION__, 'lockActionEvent: ' . $payload, 0);
                             $this->WriteAttributeString('LockActionEvent', strval($payload));
                             if ($this->ReadPropertyBoolean('UseProtocol')) {
@@ -638,7 +637,6 @@ class NukiSmartLockMQTTAPI extends IPSModule
                                 $this->UpdateProtocol();
                             }
                             break;
-
                     }
                 } else {
                     $this->SendDebug(__FUNCTION__, 'Topic or Payload is missing!', 0);
@@ -649,7 +647,10 @@ class NukiSmartLockMQTTAPI extends IPSModule
 
     #################### Request Action
 
-    public function RequestAction($Ident, $Value)
+    /**
+     * @throws Exception
+     */
+    public function RequestAction($Ident, $Value): void
     {
         if ($Ident == 'LockAction') {
             $this->SetLockAction($Value);
@@ -774,7 +775,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
 
     #################### Private
 
-    private function KernelReady()
+    private function KernelReady(): void
     {
         $this->ApplyChanges();
     }
@@ -828,94 +829,35 @@ class NukiSmartLockMQTTAPI extends IPSModule
         //Rows
         foreach (json_decode($this->ReadAttributeString('Protocol'), true) as $data) {
             //Lock action
-            switch ($data['lockAction']) {
-                case 1:
-                    $lockAction = $this->Translate('unlock');
-                    break;
-
-                case 2:
-                    $lockAction = $this->Translate('lock');
-                    break;
-
-                case 3:
-                    $lockAction = $this->Translate('unlatch');
-                    break;
-
-                case 4:
-                    $lockAction = $this->Translate('lock ‘n’ go');
-                    break;
-
-                case 5:
-                    $lockAction = $this->Translate('lock ‘n’ go with unlatch');
-                    break;
-
-                case 6:
-                    $lockAction = $this->Translate('full lock');
-                    break;
-
-                case 80:
-                    $lockAction = $this->Translate('fob (without action)');
-                    break;
-
-                case 90:
-                    $lockAction = $this->Translate('button (without action)');
-                    break;
-
-                default:
-                    $lockAction = '';
-
-            }
+            $lockAction = match ($data['lockAction']) {
+                1       => $this->Translate('unlock'),
+                2       => $this->Translate('lock'),
+                3       => $this->Translate('unlatch'),
+                4       => $this->Translate('lock ‘n’ go'),
+                5       => $this->Translate('lock ‘n’ go with unlatch'),
+                6       => $this->Translate('full lock'),
+                80      => $this->Translate('fob (without action)'),
+                90      => $this->Translate('button (without action)'),
+                default => '',
+            };
             //Trigger
-            switch ($data['trigger']) {
-                case 0:
-                    $trigger = $this->Translate('system / bluetooth command');
-                    break;
-
-                case 1:
-                    $trigger = $this->Translate('(reserved)');
-                    break;
-
-                case 2:
-                    $trigger = $this->Translate('button');
-                    break;
-
-                case 3:
-                    $trigger = $this->Translate('automatic (e.g. time control)');
-                    break;
-
-                case 6:
-                    $trigger = $this->Translate('auto lock');
-                    break;
-
-                case 171:
-                    $trigger = $this->Translate('HomeKit');
-                    break;
-
-                case 172:
-                    $trigger = $this->Translate('MQTT');
-                    break;
-
-                default:
-                    $trigger = '';
-
-            }
+            $trigger = match ($data['trigger']) {
+                0       => $this->Translate('system / bluetooth command'),
+                1       => $this->Translate('(reserved)'),
+                2       => $this->Translate('button'),
+                3       => $this->Translate('automatic (e.g. time control)'),
+                6       => $this->Translate('auto lock'),
+                171     => $this->Translate('HomeKit'),
+                172     => $this->Translate('MQTT'),
+                default => '',
+            };
             //Auto unlock
-            switch ($data['autoUnlock']) {
-                case 0:
-                    $autoUnlock = $this->Translate('back key');
-                    break;
-
-                case 1:
-                    $autoUnlock = $this->Translate('code');
-                    break;
-
-                case 2:
-                    $autoUnlock = $this->Translate('fingerprint');
-                    break;
-
-                default:
-                    $autoUnlock = '';
-            }
+            $autoUnlock = match ($data['autoUnlock']) {
+                0       => $this->Translate('back key'),
+                1       => $this->Translate('code'),
+                2       => $this->Translate('fingerprint'),
+                default => '',
+            };
             $string .= '<tr><td>' . $data['timestamp'] . '</td><td>' . $lockAction . '</td><td>' . $trigger . '</td><td>' . $data['authID'] . '</td><td>' . $data['codeID'] . '</td><td>' . $autoUnlock . '</td></tr>';
         }
         //Table end

@@ -148,7 +148,7 @@ Die Funktionalität, die das Modul im WebFront bietet:
 
 #### 7.1 Zusperren
 
-```
+```text
 NUKISLMQTT_Lock(integer InstanceID);
 ```
 
@@ -158,14 +158,16 @@ Der Befehl liefert keinen Rückgabewert.
 |--------------|-------------------------------------------|
 | `InstanceID` | ID der Nuki Smart Lock (MQTT API) Instanz |
 
-Beispiel:  
-> NUKISLMQTT_Lock(12345); 
+**Beispiel**:  
+```php
+NUKISLMQTT_Lock(12345); 
+```
 
 ---
 
 #### 7.2 Aufsperren
 
-```
+```text
 NUKISLMQTT_Unlock(integer InstanceID);
 ```
 
@@ -175,8 +177,10 @@ Der Befehl liefert keinen Rückgabewert.
 |--------------|-------------------------------------------|
 | `InstanceID` | ID der Nuki Smart Lock (MQTT API) Instanz |
 
-Beispiel:
-> NUKISLMQTT_Unlock(12345); 
+**Beispiel**:
+```php
+NUKISLMQTT_Unlock(12345);
+```
 
 ---
 
@@ -184,7 +188,7 @@ Beispiel:
 
 Schaltet eine bestimmte Aktion des Nuki Smart Locks.
 
-```
+```text
 NUKISLMQTT_SetLockAction(integer InstanceID, integer Action);  
 ```
 
@@ -203,18 +207,23 @@ Der Befehl liefert keinen Rückgabewert.
 |           | 5    | lock ‘n’ go with unlatch | automatisch aufsperren mit entriegeln und wieder zusperren |
 |           | 6    | full lock                | Vollverriegelung 2x (720)                                  |
 
-Beispiele:  
-> //Zusperren  
-> NUKISLMQTT_SetLockAction(12345, 2); 
+**Beispiel**:
+```php
+//Zusperren  
+NUKISLMQTT_SetLockAction(12345, 2); 
+```
 
-> //Aufsperren  
-> NUKISLMQTT_SetLockAction(12345, 1);  
+```php
+//Aufsperren  
+NUKISLMQTT_SetLockAction(12345, 1);  
+```
 
 ### 8. Changelog
 
-| Version | Build | Datum      | Beschreibung                                   |
-|---------|-------|------------|------------------------------------------------|
-| 1.0     | 4     | 23.05.2023 | Fix fnmatch für SymOS auf SymBox               |
-| 1.0     | 3     | 29.04.2023 | Fix für Batterieaufladung                      |
-| 1.0     | 2     | 19.04.2023 | Prüfung ob die übergeordnete Instanz aktiv ist |
-| 1.0     | 1     | 14.04.2023 | Initiale Version                               |
+| Version | Build | Datum      | Beschreibung                                     |
+|---------|-------|------------|--------------------------------------------------|
+| 1.0     | 5     | 30.06.2023 | Notwendige Anpassungen für IPS 7.0 und PHP 8.2.5 |
+| 1.0     | 4     | 23.05.2023 | Fix fnmatch für SymOS auf SymBox                 |
+| 1.0     | 3     | 29.04.2023 | Fix für Batterieaufladung                        |
+| 1.0     | 2     | 19.04.2023 | Prüfung ob die übergeordnete Instanz aktiv ist   |
+| 1.0     | 1     | 14.04.2023 | Initiale Version                                 |
