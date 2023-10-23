@@ -4,7 +4,7 @@
     "type": 3,
     "vendor": "NUKI",
     "aliases": [
-        "Nuki Smart Lock (MQTT API)"
+        "Nuki Smart Lock MQTT API"
     ],
     "url": "https://github.com/ubittner/SymconNukiMQTT/tree/main/SmartLock",
     "parentRequirements": [

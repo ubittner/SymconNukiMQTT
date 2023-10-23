@@ -3,12 +3,18 @@ name: Run Tests
 on: [push, pull_request]
 
 jobs:
+
   test:
+ 
     runs-on: ubuntu-latest
+ 
     steps:
-      - name: Checkout module
-        uses: actions/checkout@master
-        with:
+    - uses: actions/checkout@master
+      with:
           submodules: true
-      - name: Run tests
-        uses: symcon/action-tests@master
+
+    - name: Install PHPUnit
+      run: wget https://phar.phpunit.de/phpunit-9.6.3.phar
+
+    - name: Run Tests
+      run: phpdbg -qrr phpunit-9.6.3.phar tests --configuration tests/phpunit.xml

@@ -220,10 +220,11 @@ NUKISLMQTT_SetLockAction(12345, 1);
 
 ### 8. Changelog
 
-| Version | Build | Datum      | Beschreibung                                     |
-|---------|-------|------------|--------------------------------------------------|
-| 1.0     | 5     | 30.06.2023 | Notwendige Anpassungen für IPS 7.0 und PHP 8.2.5 |
-| 1.0     | 4     | 23.05.2023 | Fix fnmatch für SymOS auf SymBox                 |
-| 1.0     | 3     | 29.04.2023 | Fix für Batterieaufladung                        |
-| 1.0     | 2     | 19.04.2023 | Prüfung ob die übergeordnete Instanz aktiv ist   |
-| 1.0     | 1     | 14.04.2023 | Initiale Version                                 |
+| Version | Build  | Datum        | Beschreibung                                     |
+|---------|--------|--------------|--------------------------------------------------|
+| 1.0     | 6      | 23.10.2023   | Umstellung auf IPSModuleStrict                   |
+| 1.0     | 5      | 30.06.2023   | Notwendige Anpassungen für IPS 7.0 und PHP 8.2.5 |
+| 1.0     | 4      | 23.05.2023   | Fix fnmatch für SymOS auf SymBox                 |
+| 1.0     | 3      | 29.04.2023   | Fix für Batterieaufladung                        |
+| 1.0     | 2      | 19.04.2023   | Prüfung ob die übergeordnete Instanz aktiv ist   |
+| 1.0     | 1      | 14.04.2023   | Initiale Version                                 |

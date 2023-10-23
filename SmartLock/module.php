@@ -8,8 +8,8 @@
  * @license       https://creativecommons.org/licenses/by-nc-sa/4.0/ CC BY-NC-SA 4.0
  */
 
-/** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpUnusedPrivateFieldInspection */
+/** @noinspection PhpUndefinedFieldInspection */
 /** @noinspection PhpUnused */
 
 declare(strict_types=1);
@@ -22,7 +22,7 @@ if (!function_exists('fnmatch')) {
     }
 }
 
-class NukiSmartLockMQTTAPI extends IPSModule
+class NukiSmartLockMQTTAPI extends IPSModuleStrict
 {
     ##### Constants
     private const LIBRARY_GUID = '{C3B87D15-32F7-E693-EFE2-67AB33345452}';
@@ -261,7 +261,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
         }
     }
 
-    public function GetConfigurationForm(): string|false
+    public function GetConfigurationForm(): string
     {
         $data = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
         $library = IPS_GetLibrary(self::LIBRARY_GUID);
@@ -275,7 +275,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
     /**
      * @throws Exception
      */
-    public function ReceiveData($JSONString): void
+    public function ReceiveData($JSONString): string
     {
         if (($this->ReadPropertyString('MQTTTopic')) != '') {
             $this->SendDebug(__FUNCTION__, 'Incoming data: ' . $JSONString, 0);
@@ -643,6 +643,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
                 }
             }
         }
+        return '';
     }
 
     #################### Request Action
