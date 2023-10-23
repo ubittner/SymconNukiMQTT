@@ -7,8 +7,8 @@
 [![Check Style](https://github.com/ubittner/SymconNukiMQTT/workflows/Check%20Style/badge.svg)](https://github.com/ubittner/SymconNukiMQTT/actions)
 [![Run Tests](https://github.com/ubittner/SymconNukiMQTT/workflows/Run%20Tests/badge.svg)](https://github.com/ubittner/SymconNukiMQTT/actions)  
 [![Module Version](https://img.shields.io/badge/Module_Version-1.0-blue.svg)]()
-[![Module Build](https://img.shields.io/badge/Module_Build-5-blue.svg)]()
-[![Module Date](https://img.shields.io/badge/Module_Date-20230630_(30.06.2023)-blue.svg)]()  
+[![Module Build](https://img.shields.io/badge/Module_Build-6-blue.svg)]()
+[![Module Date](https://img.shields.io/badge/Module_Date-20231023_(23.10.2023)-blue.svg)]()  
 [![MQQT API Version](https://img.shields.io/badge/MQTT_API_Version-1.4-yellow.svg)]()  
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
