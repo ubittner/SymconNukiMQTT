@@ -289,7 +289,8 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
             $existingPayload = false;
             if (property_exists($buffer, 'Payload')) {
                 $existingPayload = true;
-                $payload = $buffer->Payload;
+                //Convert bin2hex
+                $payload = bin2hex($buffer->Payload);
                 $this->SendDebug(__FUNCTION__ . ' Payload', $payload, 0);
             }
             if (isset($topic) && isset($payload)) {
@@ -318,7 +319,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
                              * Name of the device.
                              */
                             $this->SendDebug(__FUNCTION__, 'name: ' . $payload, 0);
-                            $this->WriteAttributeString('Name', strval($payload));
+                            $this->WriteAttributeString('Name', $payload);
                             break;
 
                         case fnmatch('*/firmware', $topic):
@@ -327,7 +328,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
                              * Current firmware version of the device.
                              */
                             $this->SendDebug(__FUNCTION__, 'firmware: ' . $payload, 0);
-                            $this->WriteAttributeString('Firmware', strval($payload));
+                            $this->WriteAttributeString('Firmware', $payload);
                             break;
 
                         case fnmatch('*/mode', $topic):
@@ -484,7 +485,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
                              * Timestamp of the last ring-action. Only for Nuki Opener.
                              */
                             $this->SendDebug(__FUNCTION__, 'ringactionTimestamp: ' . $payload, 0);
-                            $this->WriteAttributeString('RingActionTimestamp', strval($payload));
+                            $this->WriteAttributeString('RingActionTimestamp', $payload);
                             break;
 
                         case fnmatch('*/serverConnected', $topic):
@@ -509,8 +510,8 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
                              * Timestamp of the retrieval of the last update.
                              */
                             $this->SendDebug(__FUNCTION__, 'timestamp: ' . $payload, 0);
-                            $this->WriteAttributeString('Timestamp', strval($payload));
-                            $time = strtotime(strval($payload));
+                            $this->WriteAttributeString('Timestamp', $payload);
+                            $time = strtotime($payload);
                             $this->SetValue('LastUpdate', date('d.m.Y, H:i:s', $time));
                             break;
 
@@ -621,7 +622,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
                              * E.g. unsuccessful Keypad code entries or lock commands outside a time window are not published.
                              */
                             $this->SendDebug(__FUNCTION__, 'lockActionEvent: ' . $payload, 0);
-                            $this->WriteAttributeString('LockActionEvent', strval($payload));
+                            $this->WriteAttributeString('LockActionEvent', $payload);
                             if ($this->ReadPropertyBoolean('UseProtocol')) {
                                 $existingData = json_decode($this->ReadAttributeString('Protocol'), true);
                                 $data = explode(',', $payload);
