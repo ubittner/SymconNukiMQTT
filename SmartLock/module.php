@@ -284,14 +284,14 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
             if (property_exists($buffer, 'Topic')) {
                 $existingTopic = true;
                 $topic = $buffer->Topic;
-                $this->SendDebug(__FUNCTION__ . ' Topic', $topic, 0);
+                $this->SendDebug(__FUNCTION__ . ' Topic New', $topic, 0);
             }
             $existingPayload = false;
             if (property_exists($buffer, 'Payload')) {
                 $existingPayload = true;
-                //Convert bin2hex
-                $payload = bin2hex($buffer->Payload);
-                $this->SendDebug(__FUNCTION__ . ' Payload', $payload, 0);
+                //Convert hex2bin
+                $payload = hex2bin($buffer->Payload);
+                $this->SendDebug(__FUNCTION__ . ' Payload New', $payload, 0);
             }
             if (isset($topic) && isset($payload)) {
                 if ($existingTopic && $existingPayload) {
