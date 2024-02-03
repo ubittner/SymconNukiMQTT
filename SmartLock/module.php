@@ -244,28 +244,35 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
             $keep = false;
         }
         //Lock action
-        $profile = self::MODULE_PREFIX . '.' . $this->InstanceID . '.EventLockAction';
-        if (!IPS_VariableProfileExists($profile)) {
-            IPS_CreateVariableProfile($profile, 1);
+        $id = @$this->GetIDForIdent('EventLockAction');
+        $this->MaintainVariable('EventLockAction', $this->Translate('Lock Action'), 1, '', 200, $keep);
+        if (!$id && $keep) {
+            IPS_SetIcon($this->GetIDForIdent('EventLockAction'), 'Information');
         }
-        IPS_SetVariableProfileIcon($profile, 'Door');
-        IPS_SetVariableProfileAssociation($profile, 1, $this->Translate('unlock'), '', 0x0000FF);
-        IPS_SetVariableProfileAssociation($profile, 2, $this->Translate('lock'), '', 0x00FF00);
-        IPS_SetVariableProfileAssociation($profile, 3, $this->Translate('unlatch'), '', 0xFF0000);
-        IPS_SetVariableProfileAssociation($profile, 4, $this->Translate('lock ‘n’ go'), '', -1);
-        IPS_SetVariableProfileAssociation($profile, 5, $this->Translate('lock ‘n’ go with unlatch'), '', 0xFFFF00);
-        IPS_SetVariableProfileAssociation($profile, 6, $this->Translate('full lock'), '', 0xFFFF00);
-        IPS_SetVariableProfileAssociation($profile, 80, $this->Translate('fob (without action)'), '', 0xFFFF00);
-        IPS_SetVariableProfileAssociation($profile, 90, $this->Translate('button (without action)'), '', -1);
-        $this->MaintainVariable('EventLockAction', $this->Translate('Lock Action'), 1, $profile, 200, $keep);
         //Event trigger
+        $id = @$this->GetIDForIdent('EventTrigger');
         $this->MaintainVariable('EventTrigger', $this->Translate('Trigger'), 1, '', 210, $keep);
+        if (!$id && $keep) {
+            IPS_SetIcon($this->GetIDForIdent('EventLockAction'), 'Information');
+        }
         //Auth ID
+        $id = @$this->GetIDForIdent('EventAuthID');
         $this->MaintainVariable('EventAuthID', $this->Translate('Auth-ID'), 1, '', 220, $keep);
+        if (!$id && $keep) {
+            IPS_SetIcon($this->GetIDForIdent('EventLockAction'), 'Information');
+        }
         //Code ID
+        $id = @$this->GetIDForIdent('EventCodeID');
         $this->MaintainVariable('EventCodeID', $this->Translate('Code-ID'), 1, '', 230, $keep);
+        if (!$id && $keep) {
+            IPS_SetIcon($this->GetIDForIdent('EventLockAction'), 'Information');
+        }
         //Auto unlock
+        $id = @$this->GetIDForIdent('EventAutoUnlock');
         $this->MaintainVariable('EventAutoUnlock', $this->Translate('Auto Unlock'), 1, '', 240, $keep);
+        if (!$id && $keep) {
+            IPS_SetIcon($this->GetIDForIdent('EventLockAction'), 'Information');
+        }
     }
 
     public function Destroy(): void
@@ -274,7 +281,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
         parent::Destroy();
 
         //Delete profiles
-        $profiles = ['LockActions', 'LockStates', 'BatteryCritical', 'BatteryChargeState', 'BatteryCharging', 'EventLockAction'];
+        $profiles = ['LockActions', 'LockStates', 'BatteryCritical', 'BatteryChargeState', 'BatteryCharging'];
         if (!empty($profiles)) {
             foreach ($profiles as $profile) {
                 $profileName = self::MODULE_PREFIX . '.' . $this->InstanceID . '.' . $profile;

@@ -137,7 +137,6 @@ NUKISLMQTT.InstanzID.Name
 | DoorSensorState           | integer |
 | DoorSensorBatteryCritical | boolean |
 | KeypadBatteryCritical     | boolean |
-| EventLockAction           | integer |
 
 Wird die `Nuki Smart Lock (MQTT API)` Instanz gelöscht, so werden automatisch die oben aufgeführten Profile gelöscht.
 
