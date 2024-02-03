@@ -7,20 +7,7 @@ jobs:
   style:
     runs-on: ubuntu-latest
     steps:
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: 8.2
-    - name: Checkout module
-      uses: actions/checkout@master
-    - run: git submodule update --init -- .style
-      shell: bash
-    - run: wget https://cs.symfony.com/download/php-cs-fixer-v3.phar
-      shell: bash
-    - run: php php-cs-fixer-v3.phar fix --config=.style/.php-cs-fixer.php -v --dry-run --allow-risky=yes --path-mode=intersection .
-      shell: bash
-    - run: |
-            if [[ -f ".style/json-check.php" ]]; then
-              php .style/json-check.php fix .
-              fi
-      shell: bash
+      - name: Checkout module
+        uses: actions/checkout@master
+      - name: Check style
+        uses: ubittner/action-style@master

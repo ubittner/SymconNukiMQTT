@@ -50,6 +50,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
         $this->RegisterPropertyBoolean('UseKeypad', false);
         $this->RegisterPropertyBoolean('UseProtocol', true);
         $this->RegisterPropertyInteger('ProtocolMaximumEntries', 5);
+        $this->RegisterPropertyBoolean('UseEventVariables', false);
 
         ##### Variables
 
@@ -236,6 +237,42 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
             $this->WriteAttributeString('Protocol', '[]');
         }
         $this->UpdateProtocol();
+
+        //Event variables
+        $keep = true;
+        if (!$this->ReadPropertyBoolean('UseEventVariables')) {
+            $keep = false;
+        }
+        //Lock action
+        $id = @$this->GetIDForIdent('EventLockAction');
+        $this->MaintainVariable('EventLockAction', $this->Translate('Lock Action'), 1, '', 200, $keep);
+        if (!$id && $keep) {
+            IPS_SetIcon($this->GetIDForIdent('EventLockAction'), 'Information');
+        }
+        //Event trigger
+        $id = @$this->GetIDForIdent('EventTrigger');
+        $this->MaintainVariable('EventTrigger', $this->Translate('Trigger'), 1, '', 210, $keep);
+        if (!$id && $keep) {
+            IPS_SetIcon($this->GetIDForIdent('EventTrigger'), 'Information');
+        }
+        //Auth ID
+        $id = @$this->GetIDForIdent('EventAuthID');
+        $this->MaintainVariable('EventAuthID', $this->Translate('Auth-ID'), 1, '', 220, $keep);
+        if (!$id && $keep) {
+            IPS_SetIcon($this->GetIDForIdent('EventAuthID'), 'Information');
+        }
+        //Code ID
+        $id = @$this->GetIDForIdent('EventCodeID');
+        $this->MaintainVariable('EventCodeID', $this->Translate('Code-ID'), 1, '', 230, $keep);
+        if (!$id && $keep) {
+            IPS_SetIcon($this->GetIDForIdent('EventCodeID'), 'Information');
+        }
+        //Auto unlock
+        $id = @$this->GetIDForIdent('EventAutoUnlock');
+        $this->MaintainVariable('EventAutoUnlock', $this->Translate('Auto Unlock'), 1, '', 240, $keep);
+        if (!$id && $keep) {
+            IPS_SetIcon($this->GetIDForIdent('EventAutoUnlock'), 'Information');
+        }
     }
 
     public function Destroy(): void
@@ -623,9 +660,9 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
                              */
                             $this->SendDebug(__FUNCTION__, 'lockActionEvent: ' . $payload, 0);
                             $this->WriteAttributeString('LockActionEvent', $payload);
+                            $data = explode(',', $payload);
                             if ($this->ReadPropertyBoolean('UseProtocol')) {
                                 $existingData = json_decode($this->ReadAttributeString('Protocol'), true);
-                                $data = explode(',', $payload);
                                 $newData = [
                                     'timestamp'  => date('d.m.Y H:i:s'),
                                     'lockAction' => $data[0],
@@ -636,6 +673,14 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
                                 array_unshift($existingData, $newData);
                                 $this->WriteAttributeString('Protocol', json_encode($existingData));
                                 $this->UpdateProtocol();
+                            }
+                            //Event variables
+                            if ($this->ReadPropertyBoolean('UseEventVariables')) {
+                                $this->SetValue('EventLockAction', $data[0]);
+                                $this->SetValue('EventTrigger', $data[1]);
+                                $this->SetValue('EventAuthID', $data[2]);
+                                $this->SetValue('EventCodeID', $data[3]);
+                                $this->SetValue('EventAutoUnlock', $data[4]);
                             }
                             break;
                     }
@@ -676,7 +721,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
             $Data['QualityOfService'] = 0;
             $Data['Retain'] = false;
             $Data['Topic'] = $this->ReadPropertyString('MQTTTopic') . '/lock';
-            $Data['Payload'] = 'true';
+            $Data['Payload'] = bin2hex('true');
             $DataJSON = json_encode($Data, JSON_UNESCAPED_SLASHES);
             $this->SendDebug(__FUNCTION__ . ' Topic', $Data['Topic'], 0);
             $this->SendDebug(__FUNCTION__ . ' Data', $DataJSON, 0);
@@ -701,7 +746,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
             $Data['QualityOfService'] = 0;
             $Data['Retain'] = false;
             $Data['Topic'] = $this->ReadPropertyString('MQTTTopic') . '/unlock';
-            $Data['Payload'] = 'true';
+            $Data['Payload'] = bin2hex('true');
             $DataJSON = json_encode($Data, JSON_UNESCAPED_SLASHES);
             $this->SendDebug(__FUNCTION__ . ' Topic', $Data['Topic'], 0);
             $this->SendDebug(__FUNCTION__ . ' Data', $DataJSON, 0);
@@ -743,7 +788,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
             $Data['QualityOfService'] = 0;
             $Data['Retain'] = false;
             $Data['Topic'] = $this->ReadPropertyString('MQTTTopic') . '/lockAction';
-            $Data['Payload'] = strval($Action);
+            $Data['Payload'] = bin2hex(strval($Action));
             $DataJSON = json_encode($Data, JSON_UNESCAPED_SLASHES);
             $this->SendDebug(__FUNCTION__ . ' Topic', $Data['Topic'], 0);
             $this->SendDebug(__FUNCTION__ . ' Data', $DataJSON, 0);

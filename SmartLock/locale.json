@@ -6,6 +6,7 @@
             "Keypad": "Keypad",
             "Protocol": "Protokoll",
             "Maximum Entries": "Maximale Einträge",
+            "Event Variables": "Ereignisvariablen",
             "Developer Area": "Entwicklerbereich",
             "List Attributes": "Attribute anzeigen",
             "Nuki Smart Lock will be created": "Nuki Smart Lock wird erstellt",
@@ -68,7 +69,9 @@
             "MQTT": "MQTT",
             "back key": "Zurück-Taste",
             "code": "Code",
-            "fingerprint": "Fingerabdruck"
+            "fingerprint": "Fingerabdruck",
+            "Auth-ID": "Auth-ID",
+            "Code-ID": "Code-ID"
         }
     }
 }

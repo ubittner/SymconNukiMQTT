@@ -58,13 +58,14 @@ Der Nutzer stimmt den o.a. Bedingungen, sowie den Lizenzbedingungen ausdrücklic
 
 __Konfigurationsseite__:
 
-| Name                | Beschreibung                              |
-|---------------------|-------------------------------------------|
-| MQTT Topic          | Name des MQTT Topics: nuki/nuki_id_in_hex |
-| Türsensor           | Türsensor Informationen anzeigen          |
-| Keypad              | Keypad Informationen anzeigen             |
-| Protokoll verwenden | Protokoll verwenden                       |
-| Maximalen Einträge  | Anzahl der maximalen Einträge             |
+| Name                 | Beschreibung                              |
+|----------------------|-------------------------------------------|
+| MQTT Topic           | Name des MQTT Topics: nuki/nuki_id_in_hex |
+| Türsensor            | Türsensor Informationen anzeigen          |
+| Keypad               | Keypad Informationen anzeigen             |
+| Protokoll verwenden  | Protokoll verwenden                       |
+| Maximalen Einträge   | Anzahl der maximalen Einträge             |
+| Ereignis Variablen   | Variablen für Verschlussaktionen          |
 
 __Schaltflächen im Aktionsbereich__:
 
@@ -104,18 +105,23 @@ Das Löschen einzelner kann zu Fehlfunktionen führen.
 
 ##### Statusvariablen
 
-| Name                      | Typ     | Beschreibung                                            |
-|---------------------------|---------|---------------------------------------------------------|
-| LockAction                | integer | Sperraktionen (auf- und zusperren + weitere Funktionen) |
-| LockState                 | integer | Sperrzustand (diverse)                                  |
-| BatteryCritical           | boolean | Batteriestatus (OK, Schwache Batterie)                  |
-| BatteryChargeState        | integer | Batterieladung (in %)                                   |
-| BatteryCharging           | boolean | Batterieaufladung (In- / Aktiv)                         |
-| LastUpdate                | string  | Letzte Aktualisierung (MQTT Nachricht)                  |
-| DoorSensorState           | integer | Türsensorstatus (diverse)                               |
-| DoorSensorBatteryCritical | boolean | Türsensor Batteriestatus (OK, Schwache Batterie)        |
-| KeypadBatteryCritical     | boolean | Keypad Batteriestatus (OK, Schwache Batterie)           |
-| Protocol                  | string  | Protokoll                                               |
+| Name                      | Typ      | Beschreibung                                            |
+|---------------------------|----------|---------------------------------------------------------|
+| LockAction                | integer  | Sperraktionen (auf- und zusperren + weitere Funktionen) |
+| LockState                 | integer  | Sperrzustand (diverse)                                  |
+| BatteryCritical           | boolean  | Batteriestatus (OK, Schwache Batterie)                  |
+| BatteryChargeState        | integer  | Batterieladung (in %)                                   |
+| BatteryCharging           | boolean  | Batterieaufladung (In- / Aktiv)                         |
+| LastUpdate                | string   | Letzte Aktualisierung (MQTT Nachricht)                  |
+| DoorSensorState           | integer  | Türsensorstatus (diverse)                               |
+| DoorSensorBatteryCritical | boolean  | Türsensor Batteriestatus (OK, Schwache Batterie)        |
+| KeypadBatteryCritical     | boolean  | Keypad Batteriestatus (OK, Schwache Batterie)           |
+| Protocol                  | string   | Protokoll                                               |
+| EventLockAction           | integer  | Ereignis Sperraktion                                    |
+| EventTrigger              | integer  | Auslöser der Sperraktion                                |
+| EventAuthID               | integer  | Ereignis Auth-ID                                        |
+| EventCodeID               | integer  | Ereignis Code-ID                                        |
+| EventAutoUnlock           | integer  | Ereignis Auto Unlock                                    |
 
 ##### Profile
 
@@ -220,11 +226,13 @@ NUKISLMQTT_SetLockAction(12345, 1);
 
 ### 8. Changelog
 
-| Version | Build  | Datum        | Beschreibung                                     |
-|---------|--------|--------------|--------------------------------------------------|
-| 1.0     | 6      | 23.10.2023   | Umstellung auf IPSModuleStrict                   |
-| 1.0     | 5      | 30.06.2023   | Notwendige Anpassungen für IPS 7.0 und PHP 8.2.5 |
-| 1.0     | 4      | 23.05.2023   | Fix fnmatch für SymOS auf SymBox                 |
-| 1.0     | 3      | 29.04.2023   | Fix für Batterieaufladung                        |
-| 1.0     | 2      | 19.04.2023   | Prüfung ob die übergeordnete Instanz aktiv ist   |
-| 1.0     | 1      | 14.04.2023   | Initiale Version                                 |
+| Version | Build | Datum      | Beschreibung                                     |
+|---------|-------|------------|--------------------------------------------------|
+| 1.0     | 8     | 03.02.2024 | Option Ereignis Variablen hinzugefügt            |
+| 1.0     | 7     | 28.10.2023 | Fix ReceiveData konvertierung bin2hex            |
+| 1.0     | 6     | 23.10.2023 | Umstellung auf IPSModuleStrict                   |
+| 1.0     | 5     | 30.06.2023 | Notwendige Anpassungen für IPS 7.0 und PHP 8.2.5 |
+| 1.0     | 4     | 23.05.2023 | Fix fnmatch für SymOS auf SymBox                 |
+| 1.0     | 3     | 29.04.2023 | Fix für Batterieaufladung                        |
+| 1.0     | 2     | 19.04.2023 | Prüfung ob die übergeordnete Instanz aktiv ist   |
+| 1.0     | 1     | 14.04.2023 | Initiale Version                                 |
