@@ -253,25 +253,25 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
         $id = @$this->GetIDForIdent('EventTrigger');
         $this->MaintainVariable('EventTrigger', $this->Translate('Trigger'), 1, '', 210, $keep);
         if (!$id && $keep) {
-            IPS_SetIcon($this->GetIDForIdent('EventLockAction'), 'Information');
+            IPS_SetIcon($this->GetIDForIdent('EventTrigger'), 'Information');
         }
         //Auth ID
         $id = @$this->GetIDForIdent('EventAuthID');
         $this->MaintainVariable('EventAuthID', $this->Translate('Auth-ID'), 1, '', 220, $keep);
         if (!$id && $keep) {
-            IPS_SetIcon($this->GetIDForIdent('EventLockAction'), 'Information');
+            IPS_SetIcon($this->GetIDForIdent('EventAuthID'), 'Information');
         }
         //Code ID
         $id = @$this->GetIDForIdent('EventCodeID');
         $this->MaintainVariable('EventCodeID', $this->Translate('Code-ID'), 1, '', 230, $keep);
         if (!$id && $keep) {
-            IPS_SetIcon($this->GetIDForIdent('EventLockAction'), 'Information');
+            IPS_SetIcon($this->GetIDForIdent('EventCodeID'), 'Information');
         }
         //Auto unlock
         $id = @$this->GetIDForIdent('EventAutoUnlock');
         $this->MaintainVariable('EventAutoUnlock', $this->Translate('Auto Unlock'), 1, '', 240, $keep);
         if (!$id && $keep) {
-            IPS_SetIcon($this->GetIDForIdent('EventLockAction'), 'Information');
+            IPS_SetIcon($this->GetIDForIdent('EventAutoUnlock'), 'Information');
         }
     }
 
