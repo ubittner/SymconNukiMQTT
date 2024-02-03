@@ -50,6 +50,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
         $this->RegisterPropertyBoolean('UseKeypad', false);
         $this->RegisterPropertyBoolean('UseProtocol', true);
         $this->RegisterPropertyInteger('ProtocolMaximumEntries', 5);
+        $this->RegisterPropertyBoolean('UseEventVariables', false);
 
         ##### Variables
 
@@ -236,6 +237,35 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
             $this->WriteAttributeString('Protocol', '[]');
         }
         $this->UpdateProtocol();
+
+        //Event variables
+        $keep = true;
+        if (!$this->ReadPropertyBoolean('UseEventVariables')) {
+            $keep = false;
+        }
+        //Lock action
+        $profile = self::MODULE_PREFIX . '.' . $this->InstanceID . '.EventLockAction';
+        if (!IPS_VariableProfileExists($profile)) {
+            IPS_CreateVariableProfile($profile, 1);
+        }
+        IPS_SetVariableProfileIcon($profile, 'Door');
+        IPS_SetVariableProfileAssociation($profile, 1, $this->Translate('unlock'), '', 0x0000FF);
+        IPS_SetVariableProfileAssociation($profile, 2, $this->Translate('lock'), '', 0x00FF00);
+        IPS_SetVariableProfileAssociation($profile, 3, $this->Translate('unlatch'), '', 0xFF0000);
+        IPS_SetVariableProfileAssociation($profile, 4, $this->Translate('lock ‘n’ go'), '', -1);
+        IPS_SetVariableProfileAssociation($profile, 5, $this->Translate('lock ‘n’ go with unlatch'), '', 0xFFFF00);
+        IPS_SetVariableProfileAssociation($profile, 6, $this->Translate('full lock'), '', 0xFFFF00);
+        IPS_SetVariableProfileAssociation($profile, 80, $this->Translate('fob (without action)'), '', 0xFFFF00);
+        IPS_SetVariableProfileAssociation($profile, 90, $this->Translate('button (without action)'), '', -1);
+        $this->MaintainVariable('EventLockAction', $this->Translate('Lock Action'), 1, $profile, 200, $keep);
+        //Event trigger
+        $this->MaintainVariable('EventTrigger', $this->Translate('Trigger'), 1, '', 210, $keep);
+        //Auth ID
+        $this->MaintainVariable('EventAuthID', $this->Translate('Auth-ID'), 1, '', 220, $keep);
+        //Code ID
+        $this->MaintainVariable('EventCodeID', $this->Translate('Code-ID'), 1, '', 230, $keep);
+        //Auto unlock
+        $this->MaintainVariable('EventAutoUnlock', $this->Translate('Auto Unlock'), 1, '', 240, $keep);
     }
 
     public function Destroy(): void
@@ -244,7 +274,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
         parent::Destroy();
 
         //Delete profiles
-        $profiles = ['LockActions', 'LockStates', 'BatteryCritical', 'BatteryChargeState', 'BatteryCharging'];
+        $profiles = ['LockActions', 'LockStates', 'BatteryCritical', 'BatteryChargeState', 'BatteryCharging', 'EventLockAction'];
         if (!empty($profiles)) {
             foreach ($profiles as $profile) {
                 $profileName = self::MODULE_PREFIX . '.' . $this->InstanceID . '.' . $profile;
@@ -623,9 +653,9 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
                              */
                             $this->SendDebug(__FUNCTION__, 'lockActionEvent: ' . $payload, 0);
                             $this->WriteAttributeString('LockActionEvent', $payload);
+                            $data = explode(',', $payload);
                             if ($this->ReadPropertyBoolean('UseProtocol')) {
                                 $existingData = json_decode($this->ReadAttributeString('Protocol'), true);
-                                $data = explode(',', $payload);
                                 $newData = [
                                     'timestamp'  => date('d.m.Y H:i:s'),
                                     'lockAction' => $data[0],
@@ -636,6 +666,14 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
                                 array_unshift($existingData, $newData);
                                 $this->WriteAttributeString('Protocol', json_encode($existingData));
                                 $this->UpdateProtocol();
+                            }
+                            //Event variables
+                            if ($this->ReadPropertyBoolean('UseEventVariables')) {
+                                $this->SetValue('EventLockAction', $data[0]);
+                                $this->SetValue('EventTrigger', $data[1]);
+                                $this->SetValue('EventAuthID', $data[2]);
+                                $this->SetValue('EventCodeID', $data[3]);
+                                $this->SetValue('EventAutoUnlock', $data[4]);
                             }
                             break;
                     }

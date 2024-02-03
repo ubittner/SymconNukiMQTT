@@ -72,6 +72,11 @@
             "caption": "Maximum Entries",
             "minimum": 1,
             "maximum": 20
+        },
+        {
+            "type": "CheckBox",
+            "name": "UseEventVariables",
+            "caption": "Event Variables"
         }
     ],
     "actions": [
