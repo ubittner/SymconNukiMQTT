@@ -746,7 +746,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
             $Data['QualityOfService'] = 0;
             $Data['Retain'] = false;
             $Data['Topic'] = $this->ReadPropertyString('MQTTTopic') . '/unlock';
-            $Data['Payload'] =  bin2hex('true');
+            $Data['Payload'] = bin2hex('true');
             $DataJSON = json_encode($Data, JSON_UNESCAPED_SLASHES);
             $this->SendDebug(__FUNCTION__ . ' Topic', $Data['Topic'], 0);
             $this->SendDebug(__FUNCTION__ . ' Data', $DataJSON, 0);
