@@ -228,6 +228,7 @@ NUKISLMQTT_SetLockAction(12345, 1);
 
 | Version | Build | Datum      | Beschreibung                                     |
 |---------|-------|------------|--------------------------------------------------|
+| 1.0     | 9     | 04.02.2024 | Fix für fehlende Protokollwerte                  |
 | 1.0     | 8     | 03.02.2024 | Option Ereignis Variablen hinzugefügt            |
 | 1.0     | 7     | 28.10.2023 | Fix ReceiveData konvertierung bin2hex            |
 | 1.0     | 6     | 23.10.2023 | Umstellung auf IPSModuleStrict                   |

@@ -877,33 +877,33 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
         foreach (json_decode($this->ReadAttributeString('Protocol'), true) as $data) {
             //Lock action
             $lockAction = match ($data['lockAction']) {
-                1       => $this->Translate('unlock'),
-                2       => $this->Translate('lock'),
-                3       => $this->Translate('unlatch'),
-                4       => $this->Translate('lock ‘n’ go'),
-                5       => $this->Translate('lock ‘n’ go with unlatch'),
-                6       => $this->Translate('full lock'),
-                80      => $this->Translate('fob (without action)'),
-                90      => $this->Translate('button (without action)'),
-                default => '',
+                '1'       => $this->Translate('unlock'),
+                '2'       => $this->Translate('lock'),
+                '3'       => $this->Translate('unlatch'),
+                '4'       => $this->Translate('lock ‘n’ go'),
+                '5'       => $this->Translate('lock ‘n’ go with unlatch'),
+                '6'       => $this->Translate('full lock'),
+                '80'      => $this->Translate('fob (without action)'),
+                '90'      => $this->Translate('button (without action)'),
+                default   => '',
             };
             //Trigger
             $trigger = match ($data['trigger']) {
-                0       => $this->Translate('system / bluetooth command'),
-                1       => $this->Translate('(reserved)'),
-                2       => $this->Translate('button'),
-                3       => $this->Translate('automatic (e.g. time control)'),
-                6       => $this->Translate('auto lock'),
-                171     => $this->Translate('HomeKit'),
-                172     => $this->Translate('MQTT'),
-                default => '',
+                '0'       => $this->Translate('system / bluetooth command'),
+                '1'       => $this->Translate('(reserved)'),
+                '2'       => $this->Translate('button'),
+                '3'       => $this->Translate('automatic (e.g. time control)'),
+                '6'       => $this->Translate('auto lock'),
+                '171'     => $this->Translate('HomeKit'),
+                '172'     => $this->Translate('MQTT'),
+                default   => '',
             };
             //Auto unlock
             $autoUnlock = match ($data['autoUnlock']) {
-                0       => $this->Translate('back key'),
-                1       => $this->Translate('code'),
-                2       => $this->Translate('fingerprint'),
-                default => '',
+                '0'       => $this->Translate('back key'),
+                '1'       => $this->Translate('code'),
+                '2'       => $this->Translate('fingerprint'),
+                default   => '',
             };
             $string .= '<tr><td>' . $data['timestamp'] . '</td><td>' . $lockAction . '</td><td>' . $trigger . '</td><td>' . $data['authID'] . '</td><td>' . $data['codeID'] . '</td><td>' . $autoUnlock . '</td></tr>';
         }

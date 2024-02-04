@@ -74,6 +74,10 @@
             "maximum": 20
         },
         {
+            "type": "Label",
+            "caption": " "
+        },
+        {
             "type": "CheckBox",
             "name": "UseEventVariables",
             "caption": "Event Variables"
