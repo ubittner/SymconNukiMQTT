@@ -7,12 +7,12 @@
 [![Check Style](https://github.com/ubittner/SymconNukiMQTT/workflows/Check%20Style/badge.svg)](https://github.com/ubittner/SymconNukiMQTT/actions)
 [![Run Tests](https://github.com/ubittner/SymconNukiMQTT/workflows/Run%20Tests/badge.svg)](https://github.com/ubittner/SymconNukiMQTT/actions)  
 [![Module Version](https://img.shields.io/badge/Module_Version-1.0-blue.svg)]()
-[![Module Build](https://img.shields.io/badge/Module_Build-9-blue.svg)]()
-[![Module Date](https://img.shields.io/badge/Module_Date-20240204_(04.02.2024)-blue.svg)]()  
-[![MQQT API Version](https://img.shields.io/badge/MQTT_API_Version-1.4-yellow.svg)]()  
+[![Module Build](https://img.shields.io/badge/Module_Build-10-blue.svg)]()
+[![Module Date](https://img.shields.io/badge/Module_Date-20250327_(27.03.2025)-blue.svg)]()  
+[![MQQT API Version](https://img.shields.io/badge/MQTT_API_Version-1.5-yellow.svg)]()  
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 Folgende Module beinhaltet dieses Repository (in alphabetischer Reihenfolge):
 
 - __SmartLock__ ([Dokumentation](SmartLock))  
-  Dieses Modul integriert das Nuki Smart Lock 3.0 Pro in IP-Symcon mittels der Nuki MQTT API.
+  Dieses Modul integriert das Nuki Smart Lock 3.0 Pro und Nuki Smart Locks Pro der 4. Generation in IP-Symcon mittels der Nuki MQTT API.
