@@ -4,12 +4,13 @@
  * @project       SymconNukiMQTT/SmartLock
  * @file          module.php
  * @author        Ulrich Bittner
- * @copyright     2023 Ulrich Bittner
+ * @copyright     2023-2025 Ulrich Bittner
  * @license       https://creativecommons.org/licenses/by-nc-sa/4.0/ CC BY-NC-SA 4.0
  */
 
+/** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpUnusedPrivateFieldInspection */
-/** @noinspection PhpUndefinedFieldInspection */
+/** @noinspection PhpMissingReturnTypeInspection */
 /** @noinspection PhpUnused */
 
 declare(strict_types=1);
@@ -22,7 +23,7 @@ if (!function_exists('fnmatch')) {
     }
 }
 
-class NukiSmartLockMQTTAPI extends IPSModuleStrict
+class NukiSmartLockMQTTAPI extends IPSModule
 {
     ##### Constants
     private const LIBRARY_GUID = '{C3B87D15-32F7-E693-EFE2-67AB33345452}';
@@ -38,7 +39,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
     //RX (Server -> Module)
     private const NUKI_MQTT_RX_GUID = '{7F7632D9-FA40-4F38-8DEA-C83CD4325A32}';
 
-    public function Create(): void
+    public function Create()
     {
         //Never delete this line!
         parent::Create();
@@ -152,7 +153,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
         $this->ConnectParent(self::NUKI_MQTT_SERVER_GUID);
     }
 
-    public function ApplyChanges(): void
+    public function ApplyChanges()
     {
         //Wait until IP-Symcon is started
         $this->RegisterMessage(0, IPS_KERNELSTARTED);
@@ -275,7 +276,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
         }
     }
 
-    public function Destroy(): void
+    public function Destroy()
     {
         //Never delete this line!
         parent::Destroy();
@@ -290,7 +291,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
         }
     }
 
-    public function MessageSink($TimeStamp, $SenderID, $Message, $Data): void
+    public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
     {
         $this->SendDebug(__FUNCTION__, $TimeStamp . ', SenderID: ' . $SenderID . ', Message: ' . $Message . ', Data: ' . print_r($Data, true), 0);
         if ($Message == IPS_KERNELSTARTED) {
@@ -298,7 +299,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
         }
     }
 
-    public function GetConfigurationForm(): string
+    public function GetConfigurationForm()
     {
         $data = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
         $library = IPS_GetLibrary(self::LIBRARY_GUID);
@@ -344,7 +345,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
                              * 0 =  Smart Lock
                              * 2 =  Opener
                              * 3 =  Smart Door
-                             * 4 =  Smart Lock 3.0 (Pro)
+                             * 4 =  Smart Lock 3.0 (Pro), Smart Lock 4th Generation (Pro)
                              */
                             $this->SendDebug(__FUNCTION__, 'deviceType: ' . $payload, 0);
                             $this->WriteAttributeInteger('DeviceType', intval($payload));
@@ -576,12 +577,14 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
                             /**
                              * ID of the desired Lock Action. Only actions 1-6 are supported.
                              *
-                             * 1 =  unlock
-                             * 2 =  lock
-                             * 3 =  unlatch
-                             * 4 =  lock ‘n’ go
-                             * 5 =  lock ‘n’ go with unlatch
-                             * 6 =  full lock
+                             * 1  =  unlock
+                             * 2  =  lock
+                             * 3  =  unlatch
+                             * 4  =  lock ‘n’ go
+                             * 5  =  lock ‘n’ go with unlatch
+                             * 6  =  full lock
+                             * 80 = fob (without action)
+                             * 90 = button (without action)
                              */
                             $this->SendDebug(__FUNCTION__, 'lockAction: ' . $payload, 0);
                             break;
