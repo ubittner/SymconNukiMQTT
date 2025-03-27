@@ -4,7 +4,7 @@
 
 [![Image](../imgs/NUKI_SmartLock.png)]()
 
-Dieses Modul integriert das [Nuki Smart Lock 3.0 Pro](https://nuki.io/de/smart-lock-pro/) in [IP-Symcon](https://www.symcon.de) mittels der [Nuki MQTT API](https://developer.nuki.io/c/apis/mqtt-api/42).  
+Dieses Modul integriert das [Nuki Smart Lock 3.0 Pro und Nuki Smart Locks Pro der 4. Generation](https://nuki.io/de-de/produkte/produktubersicht) in [IP-Symcon](https://www.symcon.de) mittels der [Nuki MQTT API](https://developer.nuki.io/c/apis/mqtt-api/42).  
 Das Nuki Smart Lock macht aus deinem Türschloss einen smarten Türöffner.
 
 Für dieses Modul besteht kein Anspruch auf Fehlerfreiheit, Weiterentwicklung, sonstige Unterstützung oder Support.  
@@ -36,8 +36,9 @@ Der Nutzer stimmt den o.a. Bedingungen, sowie den Lizenzbedingungen ausdrücklic
 
 ### 2. Voraussetzungen
 
-* IP-Symcon ab Version 6.3
-* Nuki Smart Lock 3.0 Pro
+* IP-Symcon ab Version 7
+* Nuki Smart Lock 3.0 Pro (Firmware 3.5.12 oder höher)
+* Nuki Smart Locks Pro der 4. Generation
 * WLAN-Verbindung
 * Aktivierte MQTT API Funktion mittels der Nuki iOS / Android App
 * MQTT Server Port 1883
@@ -82,13 +83,13 @@ nuki/AB12CD34
 
 Die Nuki Gerät ID finden Sie in der Nuki iOS / Android App.
 
-Meine Geräte verwalten -> Smart Lock -> [Name des Smartlocks] -> Funktionen & Konfiguration -> Allgemein:  
+Meine Geräte verwalten → Smart Lock → [Name des Smartlocks] → Funktionen & Konfiguration → Allgemein:  
 
 [![Image](../imgs/NUKI_SmartLock_DeviceID.png)]()  
 
 Wenn Sie die Konfiguration in IP-Symcon abgeschlossen haben, aktivieren Sie die MQTT Funktion für das Nuki Smart Lock mittels der Nuki iOS / Android App. 
 
-Meine Geräte verwalten -> Smart Lock -> [Name des Smartlocks] -> Funktionen & Konfiguration -> MQTT:
+Meine Geräte verwalten → Smart Lock → [Name des Smartlocks] → Funktionen & Konfiguration → MQTT:
 
 [![Image](../imgs/NUKI_SmartLock_MQTT_1.png)]()  
 
@@ -226,14 +227,15 @@ NUKISLMQTT_SetLockAction(12345, 1);
 
 ### 8. Changelog
 
-| Version | Build | Datum      | Beschreibung                                     |
-|---------|-------|------------|--------------------------------------------------|
-| 1.0     | 9     | 04.02.2024 | Fix für fehlende Protokollwerte                  |
-| 1.0     | 8     | 03.02.2024 | Option Ereignis Variablen hinzugefügt            |
-| 1.0     | 7     | 28.10.2023 | Fix ReceiveData konvertierung bin2hex            |
-| 1.0     | 6     | 23.10.2023 | Umstellung auf IPSModuleStrict                   |
-| 1.0     | 5     | 30.06.2023 | Notwendige Anpassungen für IPS 7.0 und PHP 8.2.5 |
-| 1.0     | 4     | 23.05.2023 | Fix fnmatch für SymOS auf SymBox                 |
-| 1.0     | 3     | 29.04.2023 | Fix für Batterieaufladung                        |
-| 1.0     | 2     | 19.04.2023 | Prüfung ob die übergeordnete Instanz aktiv ist   |
-| 1.0     | 1     | 14.04.2023 | Initiale Version                                 |
+| Version | Build  | Datum        | Beschreibung                                     |
+|---------|--------|--------------|--------------------------------------------------|
+| 1.0     | 10     | 27.03.2025   | Rückstellung auf IPSModule, kleinere Anpassungen |
+| 1.0     | 9      | 04.02.2024   | Fix für fehlende Protokollwerte                  |
+| 1.0     | 8      | 03.02.2024   | Option Ereignis Variablen hinzugefügt            |
+| 1.0     | 7      | 28.10.2023   | Fix ReceiveData konvertierung bin2hex            |
+| 1.0     | 6      | 23.10.2023   | Umstellung auf IPSModuleStrict                   |
+| 1.0     | 5      | 30.06.2023   | Notwendige Anpassungen für IPS 7.0 und PHP 8.2.5 |
+| 1.0     | 4      | 23.05.2023   | Fix fnmatch für SymOS auf SymBox                 |
+| 1.0     | 3      | 29.04.2023   | Fix für Batterieaufladung                        |
+| 1.0     | 2      | 19.04.2023   | Prüfung ob die übergeordnete Instanz aktiv ist   |
+| 1.0     | 1      | 14.04.2023   | Initiale Version                                 |
