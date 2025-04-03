@@ -2,8 +2,8 @@
 
 # Nuki MQTT-API
 
-[![IP-Symcon is awesome!](https://img.shields.io/badge/IP--Symcon-7.0-blue.svg)](https://www.symcon.de)
-[![PHP is awesome!](https://img.shields.io/badge/php-8.2.5-777bb3.svg?logo=php&logoColor=white&labelColor=555555)](https://www.php.net)
+[![IP-Symcon is awesome!](https://img.shields.io/badge/IP--Symcon-8.0-blue.svg)](https://www.symcon.de)
+[![PHP is awesome!](https://img.shields.io/badge/php-8.3.7-777bb3.svg?logo=php&logoColor=white&labelColor=555555)](https://www.php.net)
 [![Check Style](https://github.com/ubittner/SymconNukiMQTT/workflows/Check%20Style/badge.svg)](https://github.com/ubittner/SymconNukiMQTT/actions)
 [![Run Tests](https://github.com/ubittner/SymconNukiMQTT/workflows/Run%20Tests/badge.svg)](https://github.com/ubittner/SymconNukiMQTT/actions)  
 [![Module Version](https://img.shields.io/badge/Module_Version-1.0-blue.svg)]()

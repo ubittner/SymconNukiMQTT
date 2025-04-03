@@ -4,7 +4,7 @@
     "author": "Ulrich Bittner",
     "url": "https://github.com/ubittner/SymconNukiMQTT",
     "compatibility": {
-        "version": "7.0"
+        "version": "8.0"
     },
     "version": "1.0",
     "build": 11,

@@ -36,7 +36,7 @@ Der Nutzer stimmt den o.a. Bedingungen, sowie den Lizenzbedingungen ausdrücklic
 
 ### 2. Voraussetzungen
 
-* IP-Symcon ab Version 7
+* IP-Symcon ab Version 8
 * Nuki Smart Lock 3.0 Pro (Firmware 3.5.12 oder höher)
 * Nuki Smart Locks Pro der 4. Generation
 * WLAN-Verbindung
@@ -233,6 +233,7 @@ NUKISLMQTT_SetLockAction(12345, 1);
 
 | Version | Build  | Datum        | Beschreibung                                     |
 |---------|--------|--------------|--------------------------------------------------|
+| 1.0     | 11     | 27.03.2025   | Fix: bin2hex und hex2bin deaktiviert             |
 | 1.0     | 10     | 27.03.2025   | Rückstellung auf IPSModule, kleinere Anpassungen |
 | 1.0     | 9      | 04.02.2024   | Fix für fehlende Protokollwerte                  |
 | 1.0     | 8      | 03.02.2024   | Option Ereignis Variablen hinzugefügt            |
