@@ -327,8 +327,11 @@ class NukiSmartLockMQTTAPI extends IPSModule
             $existingPayload = false;
             if (property_exists($buffer, 'Payload')) {
                 $existingPayload = true;
-                //Convert hex2bin
+                $payload = $buffer->Payload;
+                /*
+                //Convert hex2bin deactivated
                 $payload = hex2bin($buffer->Payload);
+                 */
                 $this->SendDebug(__FUNCTION__ . ' Payload', $payload, 0);
             }
             if (isset($topic) && isset($payload)) {
@@ -724,7 +727,8 @@ class NukiSmartLockMQTTAPI extends IPSModule
             $Data['QualityOfService'] = 0;
             $Data['Retain'] = false;
             $Data['Topic'] = $this->ReadPropertyString('MQTTTopic') . '/lock';
-            $Data['Payload'] = bin2hex('true');
+            $Data['Payload'] = 'true';
+            //deactivated: $Data['Payload'] = bin2hex('true');
             $DataJSON = json_encode($Data, JSON_UNESCAPED_SLASHES);
             $this->SendDebug(__FUNCTION__ . ' Topic', $Data['Topic'], 0);
             $this->SendDebug(__FUNCTION__ . ' Data', $DataJSON, 0);
@@ -749,7 +753,8 @@ class NukiSmartLockMQTTAPI extends IPSModule
             $Data['QualityOfService'] = 0;
             $Data['Retain'] = false;
             $Data['Topic'] = $this->ReadPropertyString('MQTTTopic') . '/unlock';
-            $Data['Payload'] = bin2hex('true');
+            $Data['Payload'] = 'true';
+            //deactivated $Data['Payload'] = bin2hex('true');
             $DataJSON = json_encode($Data, JSON_UNESCAPED_SLASHES);
             $this->SendDebug(__FUNCTION__ . ' Topic', $Data['Topic'], 0);
             $this->SendDebug(__FUNCTION__ . ' Data', $DataJSON, 0);
@@ -791,7 +796,8 @@ class NukiSmartLockMQTTAPI extends IPSModule
             $Data['QualityOfService'] = 0;
             $Data['Retain'] = false;
             $Data['Topic'] = $this->ReadPropertyString('MQTTTopic') . '/lockAction';
-            $Data['Payload'] = bin2hex(strval($Action));
+            $Data['Payload'] = strval($Action);
+            //deactivated $Data['Payload'] = bin2hex(strval($Action));
             $DataJSON = json_encode($Data, JSON_UNESCAPED_SLASHES);
             $this->SendDebug(__FUNCTION__ . ' Topic', $Data['Topic'], 0);
             $this->SendDebug(__FUNCTION__ . ' Data', $DataJSON, 0);
@@ -846,14 +852,21 @@ class NukiSmartLockMQTTAPI extends IPSModule
                 return;
             }
         }
-        foreach (IPS_GetMediaListByType(MEDIATYPE_CHART) as $mediaID) {
-            $content = json_decode(base64_decode(IPS_GetMediaContent($mediaID)), true);
-            foreach ($content['axes'] as $axis) {
-                if ($axis['profile' === $Name]) {
-                    return;
+        /* deactivated
+        $mediaIDs =  IPS_GetMediaListByType(MEDIATYPE_CHART);
+        if (is_array($mediaIDs)) {
+            foreach ($mediaIDs as $mediaID) {
+                $content = json_decode(base64_decode(IPS_GetMediaContent($mediaID)), true);
+                if (array_key_exists('axes', $content)) {
+                    foreach ($content['axes'] as $axis) {
+                        if ($axis['profile' === $Name]) {
+                            return;
+                        }
+                    }
                 }
             }
         }
+         */
         IPS_DeleteVariableProfile($Name);
     }
 
