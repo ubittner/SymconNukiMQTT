@@ -91,6 +91,10 @@ Wenn Sie die Konfiguration in IP-Symcon abgeschlossen haben, aktivieren Sie die 
 
 Meine Geräte verwalten → Smart Lock → [Name des Smartlocks] → Funktionen & Konfiguration → MQTT:
 
+oder  
+
+Meine Geräte verwalten → Smart Lock → [Name des Smartlocks] → Funktionen & Konfiguration → Smart Home → MQTT:
+
 [![Image](../imgs/NUKI_SmartLock_MQTT_1.png)]()  
 
 Geben Sie die IP-Adresse Ihres IP-Symcon Servers, den Benutzernamen und das Passwort an, welches Sie zuvor vergeben haben.
