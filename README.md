@@ -2,14 +2,15 @@
 
 # Nuki MQTT-API
 
-[![IP-Symcon is awesome!](https://img.shields.io/badge/IP--Symcon-8.0-blue.svg)](https://www.symcon.de)
-[![PHP is awesome!](https://img.shields.io/badge/php-8.3.7-777bb3.svg?logo=php&logoColor=white&labelColor=555555)](https://www.php.net)
+[![IP-Symcon is awesome!](https://img.shields.io/badge/IP--Symcon-9.0-blue.svg)](https://www.symcon.de)
+[![PHP is awesome!](https://img.shields.io/badge/php-8.5-777bb3.svg?logo=php&logoColor=white&labelColor=555555)](https://www.php.net)
 [![Check Style](https://github.com/ubittner/SymconNukiMQTT/workflows/Check%20Style/badge.svg)](https://github.com/ubittner/SymconNukiMQTT/actions)
 [![Run Tests](https://github.com/ubittner/SymconNukiMQTT/workflows/Run%20Tests/badge.svg)](https://github.com/ubittner/SymconNukiMQTT/actions)  
+[![Module Type](https://img.shields.io/badge/Type-IPSModuleStrict-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
 [![Module Version](https://img.shields.io/badge/Module_Version-1.0-blue.svg)]()
-[![Module Build](https://img.shields.io/badge/Module_Build-11-blue.svg)]()
-[![Module Date](https://img.shields.io/badge/Module_Date-20250403_(03.04.2025)-blue.svg)]()  
-[![MQQT API Version](https://img.shields.io/badge/MQTT_API_Version-1.5-yellow.svg)]()  
+[![Module Build](https://img.shields.io/badge/Module_Build-12-blue.svg)]()
+[![Module Date](https://img.shields.io/badge/Module_Date-20260228_(28.02.2026)-blue.svg)]()  
+[![MQQT API Version](https://img.shields.io/badge/MQTT_API_Version-1.6-yellow.svg)]()  
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 Folgende Module beinhaltet dieses Repository (in alphabetischer Reihenfolge):
