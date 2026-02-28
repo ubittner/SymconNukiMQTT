@@ -36,12 +36,17 @@ Der Nutzer stimmt den o.a. Bedingungen, sowie den Lizenzbedingungen ausdrücklic
 
 ### 2. Voraussetzungen
 
-* IP-Symcon ab Version 8
-* Nuki Smart Lock 3.0 Pro (Firmware 3.5.12 oder höher)
-* Nuki Smart Locks Pro der 4. Generation
+* Smart Lock Ultra
+* Smart Lock Pro
+* Smart Lock Go
+* Smart Locks (4. Generation)
+* Smart Lock 3.0 Pro (Firmware 3.5.12 oder höher)  
+
+
+* IP-Symcon ab Version 9
 * WLAN-Verbindung
 * Aktivierte MQTT API Funktion mittels der Nuki iOS / Android App
-* MQTT Server Port 1883
+* MQTT Server Port 1883  
 
 ### 3. Software-Installation
 
@@ -233,6 +238,7 @@ NUKISLMQTT_SetLockAction(12345, 1);
 
 | Version | Build  | Datum        | Beschreibung                                     |
 |---------|--------|--------------|--------------------------------------------------|
+| 1.0     | 12     | 28.02.2026   | Update: IPSModuleStricht 9.0                     |
 | 1.0     | 11     | 27.03.2025   | Fix: bin2hex und hex2bin deaktiviert             |
 | 1.0     | 10     | 27.03.2025   | Rückstellung auf IPSModule, kleinere Anpassungen |
 | 1.0     | 9      | 04.02.2024   | Fix für fehlende Protokollwerte                  |

@@ -3,18 +3,26 @@ name: Run Tests
 on: [push, pull_request]
 
 jobs:
-
   test:
-
     runs-on: ubuntu-latest
 
+    env:
+      PHP_VERSION: '8.5'
+      PHPUNIT_VERSION: '13.0.5'
+
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout repository
+        uses: actions/checkout@master
         with:
           submodules: true
 
-      - name: Install PHPUnit
-        run: wget https://phar.phpunit.de/phpunit-10.1.3.phar
+      - name: Setup PHP ${{ env.PHP_VERSION }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+
+      - name: Download PHPUnit ${{ env.PHPUNIT_VERSION }}
+        run: wget https://phar.phpunit.de/phpunit-${{ env.PHPUNIT_VERSION }}.phar
 
       - name: Run Tests
-        run: phpdbg -qrr phpunit-10.1.3.phar tests --configuration tests/phpunit.xml
+        run: php phpunit-${{ env.PHPUNIT_VERSION }}.phar tests --configuration tests/phpunit.xml

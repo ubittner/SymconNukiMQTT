@@ -4,14 +4,12 @@
  * @project       SymconNukiMQTT/SmartLock
  * @file          module.php
  * @author        Ulrich Bittner
- * @copyright     2023-2025 Ulrich Bittner
+ * @copyright     2023-2026 Ulrich Bittner
  * @license       https://creativecommons.org/licenses/by-nc-sa/4.0/ CC BY-NC-SA 4.0
  */
 
-/** @noinspection PhpUnhandledExceptionInspection */
-/** @noinspection PhpUnusedPrivateFieldInspection */
-/** @noinspection PhpMissingReturnTypeInspection */
-/** @noinspection PhpUnused */
+//** @noinspection PhpUnusedPrivateFieldInspection */
+//** @noinspection PhpUnused */
 
 declare(strict_types=1);
 
@@ -23,23 +21,23 @@ if (!function_exists('fnmatch')) {
     }
 }
 
-class NukiSmartLockMQTTAPI extends IPSModule
+class NukiSmartLockMQTTAPI extends IPSModuleStrict
 {
     ##### Constants
-    private const LIBRARY_GUID = '{C3B87D15-32F7-E693-EFE2-67AB33345452}';
-    private const MODULE_NAME = 'Nuki Smart Lock (MQTT API)';
-    private const MODULE_PREFIX = 'NUKISLMQTT';
+    private const string LIBRARY_GUID = '{C3B87D15-32F7-E693-EFE2-67AB33345452}';
+    private const string MODULE_NAME = 'Nuki Smart Lock (MQTT API)';
+    private const string MODULE_PREFIX = 'NUKISLMQTT';
 
     //MQTT Server (Splitter)
-    private const NUKI_MQTT_SERVER_GUID = '{C6D2AEB3-6E1F-4B2E-8E69-3A1A00246850}';
+    private const string NUKI_MQTT_SERVER_GUID = '{C6D2AEB3-6E1F-4B2E-8E69-3A1A00246850}';
 
     //TX (Module -> Server)
-    private const NUKI_MQTT_TX_GUID = '{043EA491-0325-4ADD-8FC2-A30C8EEB4D3F}';
+    private const string NUKI_MQTT_TX_GUID = '{043EA491-0325-4ADD-8FC2-A30C8EEB4D3F}';
 
     //RX (Server -> Module)
-    private const NUKI_MQTT_RX_GUID = '{7F7632D9-FA40-4F38-8DEA-C83CD4325A32}';
+    private const string NUKI_MQTT_RX_GUID = '{7F7632D9-FA40-4F38-8DEA-C83CD4325A32}';
 
-    public function Create()
+    public function Create(): void
     {
         //Never delete this line!
         parent::Create();
@@ -146,17 +144,15 @@ class NukiSmartLockMQTTAPI extends IPSModule
         $this->RegisterAttributeInteger('CommandResponse', 0);
         $this->RegisterAttributeString('LockActionEvent', '');
         $this->RegisterAttributeString('Protocol', '[]');
-
-        ##### Splitter
-
-        //Connect to parent MQTT Server (Splitter)
-        $this->ConnectParent(self::NUKI_MQTT_SERVER_GUID);
     }
 
-    public function ApplyChanges()
+    public function ApplyChanges(): void
     {
         //Wait until IP-Symcon is started
         $this->RegisterMessage(0, IPS_KERNELSTARTED);
+
+        //Register FM Connect message
+        $this->RegisterMessage($this->InstanceID, FM_CONNECT);
 
         //Never delete this line!
         parent::ApplyChanges();
@@ -237,7 +233,10 @@ class NukiSmartLockMQTTAPI extends IPSModule
             $this->MaintainVariable('Protocol', $this->Translate('Protocol'), 3, '', 0, false);
             $this->WriteAttributeString('Protocol', '[]');
         }
-        $this->UpdateProtocol();
+
+        if ($this->HasActiveParent()) {
+            $this->UpdateProtocol();
+        }
 
         //Event variables
         $keep = true;
@@ -276,7 +275,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
         }
     }
 
-    public function Destroy()
+    public function Destroy(): void
     {
         //Never delete this line!
         parent::Destroy();
@@ -291,15 +290,33 @@ class NukiSmartLockMQTTAPI extends IPSModule
         }
     }
 
-    public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
+    public function GetCompatibleParents(): string
+    {
+        //Connect to an existing or new MQTT Server (Splitter)
+        return json_encode([
+            'type'      => 'connect',
+            'moduleIDs' => [
+                self::NUKI_MQTT_SERVER_GUID
+            ]
+        ]);
+    }
+
+    public function MessageSink($TimeStamp, $SenderID, $Message, $Data): void
     {
         $this->SendDebug(__FUNCTION__, $TimeStamp . ', SenderID: ' . $SenderID . ', Message: ' . $Message . ', Data: ' . print_r($Data, true), 0);
-        if ($Message == IPS_KERNELSTARTED) {
-            $this->KernelReady();
+        switch ($Message) {
+            case IPS_KERNELSTARTED:
+                $this->KernelReady();
+                break;
+
+            case FM_CONNECT:
+                $this->UpdateProtocol();
+                break;
+
         }
     }
 
-    public function GetConfigurationForm()
+    public function GetConfigurationForm(): string
     {
         $data = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
         $library = IPS_GetLibrary(self::LIBRARY_GUID);
@@ -327,11 +344,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
             $existingPayload = false;
             if (property_exists($buffer, 'Payload')) {
                 $existingPayload = true;
-                $payload = $buffer->Payload;
-                /*
-                //Convert hex2bin deactivated
                 $payload = hex2bin($buffer->Payload);
-                 */
                 $this->SendDebug(__FUNCTION__ . ' Payload', $payload, 0);
             }
             if (isset($topic) && isset($payload)) {
@@ -349,6 +362,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
                              * 2 =  Opener
                              * 3 =  Smart Door
                              * 4 =  Smart Lock 3.0 (Pro), Smart Lock 4th Generation (Pro)
+                             * 5 =  Smart Lock Ultra, Smart Lock Pro (5th Generation), Smart Lock Go
                              */
                             $this->SendDebug(__FUNCTION__, 'deviceType: ' . $payload, 0);
                             $this->WriteAttributeInteger('DeviceType', intval($payload));
@@ -618,7 +632,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
                              *
                              * Note:
                              * Nuki devices can only process one command at a time.
-                             * If several commands are sent in parallel the commandResponses might overlap.
+                             * If several commands are sent in parallel, the commandResponses might overlap.
                              */
                             $this->SendDebug(__FUNCTION__, 'commandResponse: ' . $payload, 0);
                             $this->WriteAttributeInteger('CommandResponse', intval($payload));
@@ -627,7 +641,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
                         case fnmatch('*/lockActionEvent', $topic):
                             //Lock action event
                             /**
-                             * The Nuki device publishes to this topic a comma separated list whenever a lock action is about to be executed:
+                             * The Nuki device publishes to this topic a comma-separated list whenever a lock action is about to be executed:
                              *
                              * (1)
                              * LockAction:
@@ -727,8 +741,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
             $Data['QualityOfService'] = 0;
             $Data['Retain'] = false;
             $Data['Topic'] = $this->ReadPropertyString('MQTTTopic') . '/lock';
-            $Data['Payload'] = 'true';
-            //deactivated: $Data['Payload'] = bin2hex('true');
+            $Data['Payload'] = bin2hex('true');
             $DataJSON = json_encode($Data, JSON_UNESCAPED_SLASHES);
             $this->SendDebug(__FUNCTION__ . ' Topic', $Data['Topic'], 0);
             $this->SendDebug(__FUNCTION__ . ' Data', $DataJSON, 0);
@@ -753,8 +766,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
             $Data['QualityOfService'] = 0;
             $Data['Retain'] = false;
             $Data['Topic'] = $this->ReadPropertyString('MQTTTopic') . '/unlock';
-            $Data['Payload'] = 'true';
-            //deactivated $Data['Payload'] = bin2hex('true');
+            $Data['Payload'] = bin2hex('true');
             $DataJSON = json_encode($Data, JSON_UNESCAPED_SLASHES);
             $this->SendDebug(__FUNCTION__ . ' Topic', $Data['Topic'], 0);
             $this->SendDebug(__FUNCTION__ . ' Data', $DataJSON, 0);
@@ -796,8 +808,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
             $Data['QualityOfService'] = 0;
             $Data['Retain'] = false;
             $Data['Topic'] = $this->ReadPropertyString('MQTTTopic') . '/lockAction';
-            $Data['Payload'] = strval($Action);
-            //deactivated $Data['Payload'] = bin2hex(strval($Action));
+            $Data['Payload'] = bin2hex(strval($Action));
             $DataJSON = json_encode($Data, JSON_UNESCAPED_SLASHES);
             $this->SendDebug(__FUNCTION__ . ' Topic', $Data['Topic'], 0);
             $this->SendDebug(__FUNCTION__ . ' Data', $DataJSON, 0);
@@ -809,7 +820,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
 
     /**
      * Gets the stored attributes.
-     * Maybe attributes needed in future versions.
+     * Maybe attributes are needed in future versions.
      *
      * @return array
      * @throws Exception
@@ -852,21 +863,6 @@ class NukiSmartLockMQTTAPI extends IPSModule
                 return;
             }
         }
-        /* deactivated
-        $mediaIDs =  IPS_GetMediaListByType(MEDIATYPE_CHART);
-        if (is_array($mediaIDs)) {
-            foreach ($mediaIDs as $mediaID) {
-                $content = json_decode(base64_decode(IPS_GetMediaContent($mediaID)), true);
-                if (array_key_exists('axes', $content)) {
-                    foreach ($content['axes'] as $axis) {
-                        if ($axis['profile' === $Name]) {
-                            return;
-                        }
-                    }
-                }
-            }
-        }
-         */
         IPS_DeleteVariableProfile($Name);
     }
 
@@ -876,7 +872,7 @@ class NukiSmartLockMQTTAPI extends IPSModule
             $this->SendDebug(__FUNCTION__, 'Abort, protocol is not enabled!', 0);
             return;
         }
-        //Clean up protocol
+        //Cleanup protocol
         $existingData = json_decode($this->ReadAttributeString('Protocol'), true);
         //Check maximum entries
         $maximumEntries = $this->ReadPropertyInteger('ProtocolMaximumEntries');
