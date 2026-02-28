@@ -3,11 +3,38 @@ name: Check Style
 on: [push, pull_request]
 
 jobs:
-
   style:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout module
+      - name: Checkout repository
         uses: actions/checkout@master
-      - name: Check style
-        uses: ubittner/action-style@master
+        with:
+          submodules: recursive
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.5
+
+      - name: Initialize style submodule (fallback)
+        run: git submodule update --init -- .style
+
+      - name: Download PHP-CS-Fixer
+        run: wget https://cs.symfony.com/download/php-cs-fixer-v3.phar
+
+      - name: Run PHP-CS-Fixer (dry-run)
+        run: |
+          php php-cs-fixer-v3.phar fix \
+            --config=.style/.php-cs-fixer.php \
+            -v \
+            --dry-run \
+            --allow-risky=yes \
+            --path-mode=intersection \
+            .
+
+      - name: Run optional JSON style check
+        run: |
+          if [[ -f ".style/json-check.php" ]]; then
+            php .style/json-check.php fix .
+          fi
