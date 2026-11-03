@@ -61,7 +61,7 @@
             "fob (without action)": "Fob (ohne Aktion)",
             "button (without action)": "Taste (ohne Aktion)",
             "system / bluetooth command": "System / Bluetooth Befehl",
-            "(reserved)": "(reserviert)",
+            "manual": "Manuell",
             "button": "Taste",
             "automatic (e.g. time control)": "Automatik (z.B. Zeitplan)",
             "auto lock": "Automatische Verriegelung",

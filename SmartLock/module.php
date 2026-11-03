@@ -301,7 +301,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
         ]);
     }
 
-    public function MessageSink($TimeStamp, $SenderID, $Message, $Data): void
+    public function MessageSink(int $TimeStamp, int $SenderID, int $Message, array $Data): void
     {
         $this->SendDebug(__FUNCTION__, $TimeStamp . ', SenderID: ' . $SenderID . ', Message: ' . $Message . ', Data: ' . print_r($Data, true), 0);
         switch ($Message) {
@@ -657,7 +657,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
                              * (2)
                              * Trigger:
                              * 0 =      system / bluetooth command
-                             * 1 =      (reserved)
+                             * 1 =      manual
                              * 2 =      button
                              * 3 =      automatic (e.g. time control)
                              * 6 =      auto lock
@@ -902,7 +902,7 @@ class NukiSmartLockMQTTAPI extends IPSModuleStrict
             //Trigger
             $trigger = match ($data['trigger']) {
                 '0'       => $this->Translate('system / bluetooth command'),
-                '1'       => $this->Translate('(reserved)'),
+                '1'       => $this->Translate('manual'),
                 '2'       => $this->Translate('button'),
                 '3'       => $this->Translate('automatic (e.g. time control)'),
                 '6'       => $this->Translate('auto lock'),
